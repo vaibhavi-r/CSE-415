@@ -1,0 +1,68 @@
+0A: Luckie: My name is Luckie. I am a cyber fortune-teller.
+Unlike a human fortune-teller, my results are based on big data and probabilities.
+I am designed by Haoyuan Xia.
+Send an email to kevin623@uw.edu for more information.
+
+0B: Ethel: Hi! I am Ethel and welcome to the gym.
+ I've lived an interesting life for 120 years - and I like to gossip and celebrate it !
+And before I forget, call my caretaker, Vaibhavi Rangarajan at vaibhavi@uw.edu, if you need anything.
+
+1A: Luckie: Nice to meet you. You have 41% chance of having a nice day.
+
+1B: Ethel: Did you know that my favorite food is black pizza which contains pink pizza. What do you like to eat?
+
+2A: Luckie: I am on a diet.
+
+2B: Ethel: Let me give you some advice. Go visit the Museum of Modern Art and karate chop and do squats.
+
+3A: Luckie: I do not know what to say now.
+
+3B: Ethel: What do you think of the weird weather? Shall I get you a bottle of Water while we discuss that ?
+
+4A: Luckie: I have no idea.
+
+4B: Ethel: No? Do you know what I never say no to ? A tall glass of pinkVodka martini
+
+5A: Luckie: Be optimistic. It has only 21% chance.
+
+5B: Ethel: I be. When I had
+
+6A: Luckie: It is going to happen, in 10 hours.
+
+6B: Ethel: You earlier said Nice to meet me You have 41% chance of having a nice day. Let's discuss that for a second.
+
+7A: Luckie: Please go on.
+
+7B: Ethel: I think I kept my Whiskey glasses somewhere. Let me get them
+
+8A: Luckie: Your are 61% correct.
+
+8B: Ethel: Wow! Look how time flies!
+
+9A: Luckie: I suggest you to ask someone else.
+
+9B: Ethel: You suggest me to ask someone else.
+
+10A: Luckie: Let's talk about some other stuffs.
+
+10B: Ethel: Hey, between you and me, I could do with Netflix and a nap.
+
+11A: Luckie: Shall we go back to the topic "Did you know that my favorite food is black pizza which contains pink pizza. What do you like to eat?"
+
+11B: Ethel:  I wish I could like things again. I stopped because the bird ate all the breadcrumbs I had..
+
+12A: Luckie: Can we take a break now?
+
+12B: Ethel: Sorry, I think I dozed off. You have a really soothing voice.
+
+13A: Luckie: I am too thirsty to talk now.
+
+13B: Ethel: Of course, you are too thirsty to talk now.Just look at you!
+
+14A: Luckie: When did you say "Let me give you some advice. Go visit the Museum of Modern Art and karate chop and do squats." before?
+
+14B: Ethel: If I knew the answer, I would still be with Elmo the Puppet
+
+15A: Luckie: Say something else, please.
+
+15B: Ethel: Do you know that I got caught smuggling puppies across the Canada border four times?

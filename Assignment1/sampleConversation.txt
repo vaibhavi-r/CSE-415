@@ -1,0 +1,129 @@
+Agent A : Ethel (To be evaluated)
+Agent B : Luckie
+
+———————————————————————————————————————
+
+0A: Ethel: Hi! I am Ethel and welcome to the hospital. 
+ I've lived an interesting life for 120 years - and I like to gossip and celebrate it !
+And before I forget, call my caretaker, Vaibhavi Rangarajan at vaibhavi@uw.edu, if you need anything.
+
+
+##### RANDOM - Ethel’s current location is randomly selected from places like Hospital, Prison, Gym, White House etc.
+
+
+0B: Luckie: My name is Luckie. I am a cyber fortune-teller.
+Unlike a human fortune-teller, my results are based on big data and probabilities.
+I am designed by Haoyuan Xia.
+Send an email to kevin623@uw.edu for more information.
+
+1A: Ethel: Hullo! I don't like mornings because I died and came back to life just recently.
+
+
+##### Rule 3 - RANDOM - Ethel chooses why she doesn’t like mornings randomly from a set of excuses, along with a random greeting.
+
+
+1B: Luckie: I do not know what to say now.
+
+2A: Ethel: When I was 87 years old, my best friend was Nelson Mandela. Wish we met again.
+
+
+##### Rule 33 - SUPER RANDOM - Response chosen randomly from list. Person and age chosen randomly also.
+
+
+2B: Luckie: It is going to happen, in 10 weeks.
+
+3A: Ethel: What do you think of the weird weather? Shall I get you a bottle of Water while we discuss that ?
+
+
+##### Rule 31 - CYCLE - Ethel chooses from a set of default responses,and added random drink.
+
+
+3B: Luckie: I have no idea.
+
+4A: Ethel: I stopped having good ideas because my knees aren't working since 1942.
+
+
+##### Rule 23 - RANDOM - Response to the keyword 'idea' chosen RANDOMLY from list of possible trigger responses
+
+
+4B: Luckie: Please go on.
+
+5A: Ethel: Where am I ? Get me out of here!
+
+
+##### Rule 32 - RANDOM - Complete response chosen RANDOMLY from list
+
+
+5B: Luckie: Let's talk about some other stuffs.
+
+6A: Ethel: Do you remember telling me Please go on? Or was it the gin talking?
+
+
+##### Rule 34 - MEMORY - Ethel Remembers a previous statement made by Luckie. chosen randomly. Excludes immediately preceding remark.
+
+
+6B: Luckie: No. And you?
+
+7A: Ethel: Okay then. You say something interesting instead.
+
+
+##### Rule 22 - RANDOM - Response to the keyword 'No' chosen RANDOMLY from list of possible trigger responses
+
+
+7B: Luckie: Shall we go back to the topic "Hullo! I don't like mornings because I died and came back to life just recently."
+
+8A: Ethel:  I wish I could like things again. I stopped because the war happened and nothing was the same..
+
+
+##### Rule 15 - RANDOM - Response to the keyword “Like”, by talking about her new behaviour with randomly chosen excuse (Because predicate). 
+
+
+8B: Luckie: There will be no wars in the future with 100% certainty.
+
+9A: Ethel: No? Do you know what I never say no to ? A tall glass of white Warm milk on Tuesday.
+
+
+##### Rule 22 - RANDOM - Response to the keyword 'No' chosen RANDOMLY from list of possible trigger responses
+
+
+9B: Luckie: Try to be optimistic. It has only 66% chance.
+
+10A: Ethel: I try. When I have to.
+
+10B: Luckie: It will never happen.
+
+11A: Ethel: Wow! Look how time flies!
+
+
+##### Rule 31 - CYCLE - Ethel chooses from a set of default responses.
+
+
+11B: Luckie: I suggest you to ask someone else.
+
+12A: Ethel: You suggest me to ask someone else.
+
+12B: Luckie: Can we take a break now?
+
+13A: Ethel: Hey, between you and me, I could do with Netflix and a nap.
+
+
+##### Rule 31 - CYCLE - Ethel chooses from a set of default responses.
+
+
+13B: Luckie: I am too thirsty to talk now.
+
+14A: Ethel: Let me give you some advice. Go visit Mount Everest and meditate.
+
+
+## Rule 27 - RANDOM CYCLE - Response to I am ___ chosen from a CYCLE. Place and Activity chosen RANDOMLY
+
+
+14B: Luckie: When did you say "What do you think of the weird weather? Shall I get you a bottle of Water while we discuss that ?" before?
+
+15A: Ethel: If I knew the answer, I would still be with Dwayne The Rock Johnson
+
+
+## Rule 28 - RANDOM CYCLE - Response to a W-question chosen from a CYCLE. Person (Dwayne) chosen RANDOMLY
+
+
+15B: Luckie: Say something else, please.
