@@ -20,10 +20,15 @@
 from re import *  # Loads the regular expression module.
 from collections import defaultdict
 
+
+############################
+#KNOWLEDGE REPRESENTATION
+############################
+
 ISA = defaultdict(list)
 INCLUDES = defaultdict(list)
 ARTICLES = defaultdict(str)
-
+SYNONYMS = defaultdict(list)
 
 def reset():
     global ISA, INCLUDES, ARTICLES
@@ -37,11 +42,9 @@ def store_isa_fact(category1, category2):
     ISA[category1].append(category2)
     INCLUDES[category2].append(category1)
 
-
 def get_isa_list(category1):
     'Retrieves any existing list of things that CATEGORY1 is a'
     return ISA[category1]
-
 
 def get_includes_list(category1):
     'Retrieves any existing list of things that CATEGORY1 includes'
@@ -51,7 +54,6 @@ def get_includes_list(category1):
 def isa_test1(category1, category2):
     'Returns True if category 2 is (directly) on the list for category 1.'
     return get_isa_list(category1).__contains__(category2)
-
 
 def isa_test(category1, category2, depth_limit=10):
     'Returns True if category 1 is a subset of category 2 within depth_limit levels'
@@ -63,17 +65,17 @@ def isa_test(category1, category2, depth_limit=10):
             return True
     return False
 
-
 def store_article(noun, article):
     'Saves the article (in lower-case) associated with a noun.'
     ARTICLES[noun] = article.lower()
-
 
 def get_article(noun):
     'Returns the article associated with the noun, or if none, the empty string.'
     return ARTICLES[noun]
 
-
+###############################
+#Controlling Logic
+###############################
 def linneus():
     'The main loop; it gets and processes user input, until "bye".'
     print('This is Linneus.  Please tell me "ISA" facts and ask questions.')
@@ -83,8 +85,7 @@ def linneus():
         info = input('Enter an ISA fact, or "bye" here: ')
         if info == 'bye': return 'Goodbye now!'
         if info == 'test':
-            #test()
-            print("")
+            test()
         else:
             process(info)
 
@@ -94,9 +95,8 @@ assertion_pattern = compile(r"^(a|an|A|An)\s+([-\w]+)\s+is\s+(a|an)\s+([-\w]+)(\
 query_pattern = compile(r"^is\s+(a|an)\s+([-\w]+)\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
 what_pattern = compile(r"^What\s+is\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
 why_pattern = compile(r"^Why\s+is\s+(a|an)\s+([-\w]+)\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
-
-#pattern_str= "^(Tell)\s+(me)\s+(what)\s+(you)\s+(know)\s+(about)\s+(\'|\")[-\w]+(\'|\")\s*(,)*\s*(with)\s+(justification)(.|!|\?)*$"
 tell_me_about_pattern = compile(r"^Tell\s+me\s+what\s+you\s+know\s+about\s+(\'|\")([-\w]+)(\'|\")\s*,*\s*with\s+justification.|!|\?*$", IGNORECASE)
+
 
 def process(info):
     'Handles the user sentence, matching and responding.'
@@ -161,24 +161,29 @@ def process(info):
         items = result_match_object.groups()
         noun = items[1]
 
+        #Tell more about ancestors
         supersets = get_isa_list(noun)
         if supersets != []:
             isa_bfs(noun)
 
+        #Tell more about successors
         subsets = get_includes_list(noun)
         if subsets != []:
             includes_bfs(noun)
 
+        #No ancestors or successors
         if supersets ==[]  and subsets==[]:
-            print("I don't know")
+            a= get_article(noun)
+            print(a,noun,"is",a,noun+".")
             return
 
         print("That's all I know about \'%s\'."% noun)
         return
 
 
-    print("I do not understand.  You entered: ")
+    print("I do not understand. You entered: ")
     print(info)
+
 
 def answer_why(x, y):
     'Handles the answering of a Why question.'
@@ -226,26 +231,7 @@ def find_chain(x, z):
                 return temp
 
 
-def answer_tell_me_more(x, y, type="parent"):
-    if x == y:
-        print("Because they are identical.")
-        return
-
-    if type =="parent":
-        print("you told me that directly.")
-
-    elif isa_test1(x, y):
-        print("")
-
-    if type=="child":
-        print()
-
-        return
-
-    print(", because " + report_chain(x, y))
-    return
-
-
+#Explore the Hierarchy upwards (Ancestors)
 def isa_bfs(x):
     EXPLORED=[]
     queue = [x]
@@ -267,6 +253,8 @@ def isa_bfs(x):
                 if ancestor not in EXPLORED:
                     queue.append(ancestor)
 
+
+#Explore the hierarchy downwards (Successors)
 def includes_bfs(x):
     EXPLORED=[]
     queue = [x]
@@ -291,4 +279,79 @@ def includes_bfs(x):
 
     return
 
-#isa_bfs("rabbit")
+
+#########################
+#TEST CASES
+#########################
+
+CASE1 = [
+    ("A turtle is a reptile.", None),
+    ("A turtle is a shelled-creature.", None),
+    ("A reptile is an animal.", None),
+    ("An animal is a thing.", None),
+    ("Is a turtle a reptile.", ["Yes, it is."]),
+    ("Is a turtle an animal.", ["Yes, it is."]),
+    ("What is a turtle?", ["A turtle is a reptile."]),
+    ("Why is a turtle an animal?", ["Because a turtle is a reptile, and a reptile is an animal."]),
+    ("Why is an animal a reptile?", ["But that's not true, as far as I know!"]),
+    ("Tell me what you know about \'turtle\', with justification.", [
+        "A turtle is a reptile; you told me that directly.",
+        "A turtle is a shelled-creature; you told me that directly.",
+        "A turtle is an animal, because a turtle is a reptile and a reptile is an animal.",
+        "A turtle is a thing, because a turtle is a reptile, a reptile is an animal, and an animal is a thing.",
+        "That's all I know about \'turtle\'."]),
+]
+
+CASE2 = [
+    ("A BugsBunny is a cartoon.", None),
+    ("A DaffyDuck is a cartoon.", None),
+    ("A BugsBunny is a rabbit.", None),
+    ("A DaffyDuck is a duck.", None),
+    ("A duck is a bird.", None),
+    ("A bird is an animal.", None),
+    ("A rabbit is a mammal.", None),
+    ("A mammal is an animal.", None),
+    ("Is a BugsBunny an animal?", ["Yes, it is."]),
+    ("Is a DaffyDuck a rabbit?", ["No, as far as I have been informed, it is not."]),
+    ("Tell me what you know about \'DaffyDuck\', with justification.", [
+        "A DaffyDuck is a cartoon; you told me that directly.",
+        "A DaffyDuck is a duck; you told me that directly.",
+        "A DaffyDuck is a bird, because a DaffyDuck is a duck and a duck is a bird",
+        "A DaffyDuck is an animal, because a DaffyDuck is a duck, a duck is a bird, and a bird is an animal.",
+        "That's all I know about \'DaffyDuck\'."]),
+    ("Tell me what you know about \'rabbit\', with justification.", [
+        "A rabbit is a mammal; you told me that directly.",
+        "A rabbit is an animal, because a rabbit is a mammal and a mammal is an animal.",
+        "A rabbit is something more general than a BugsBunny, because a BugsBunny is a rabbit.",
+        "That's all I know about \'rabbit\'."]),
+]
+
+def test():
+    TESTS = [CASE1, CASE2]
+    import sys
+    import io
+    old_stdout = sys.stdout
+    new_stdout = io.StringIO()
+
+    for i, case in enumerate(TESTS):
+        print("======== TEST %d =========" % i)
+        reset()
+        for inp, out in case:
+            print("         INPUT: %s" % inp)
+            sys.stdout = new_stdout
+            process(inp)
+            sys.stdout = old_stdout
+            lines = [x.strip() for x in new_stdout.getvalue().split("\n") if x.strip()]
+            new_stdout = io.StringIO()
+            if out is not None:
+                for l in lines:
+                    print("   YOUR OUTPUT: %s" % l)
+                for l in out:
+                    print("CORRECT OUTPUT: %s" % l)
+                print("")
+        print("")
+
+##########################
+#
+##########################
+linneus()
