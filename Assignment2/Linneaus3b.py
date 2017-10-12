@@ -31,7 +31,6 @@ def reset():
     INCLUDES = defaultdict(list)
     ARTICLES = defaultdict(str)
 
-
 def store_isa_fact(category1, category2):
     'Stores one fact of the form A BIRD IS AN ANIMAL'
     # That is, a member of CATEGORY1 is a member of CATEGORY2
@@ -84,7 +83,8 @@ def linneus():
         info = input('Enter an ISA fact, or "bye" here: ')
         if info == 'bye': return 'Goodbye now!'
         if info == 'test':
-            test()
+            #test()
+            print("")
         else:
             process(info)
 
@@ -95,9 +95,12 @@ query_pattern = compile(r"^is\s+(a|an)\s+([-\w]+)\s+(a|an)\s+([-\w]+)(\?\.)*", I
 what_pattern = compile(r"^What\s+is\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
 why_pattern = compile(r"^Why\s+is\s+(a|an)\s+([-\w]+)\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
 
+#pattern_str= "^(Tell)\s+(me)\s+(what)\s+(you)\s+(know)\s+(about)\s+(\'|\")[-\w]+(\'|\")\s*(,)*\s*(with)\s+(justification)(.|!|\?)*$"
+tell_me_about_pattern = compile(r"^Tell\s+me\s+what\s+you\s+know\s+about\s+(\'|\")([-\w]+)(\'|\")\s*,*\s*with\s+justification.|!|\?*$", IGNORECASE)
 
 def process(info):
     'Handles the user sentence, matching and responding.'
+    #ASSERTION
     result_match_object = assertion_pattern.match(info)
     if result_match_object != None:
         items = result_match_object.groups()
@@ -106,6 +109,8 @@ def process(info):
         store_isa_fact(items[1], items[3])
         print("I understand.")
         return
+
+    #QUERY
     result_match_object = query_pattern.match(info)
     if result_match_object != None:
         items = result_match_object.groups()
@@ -115,6 +120,8 @@ def process(info):
         else:
             print("No, as far as I have been informed, it is not.")
         return
+
+    #WHAT IS A ___
     result_match_object = what_pattern.match(info)
     if result_match_object != None:
         items = result_match_object.groups()
@@ -136,17 +143,42 @@ def process(info):
             else:
                 print("I don't know.")
         return
+
+    #WHY IS __  A __
     result_match_object = why_pattern.match(info)
     if result_match_object != None:
         items = result_match_object.groups()
         if not isa_test(items[1], items[3]):
-            print("But that's not true, as far as I know!")
+            print("But that's not true, as far as I know!"
+                  )
         else:
             answer_why(items[1], items[3])
         return
+
+    #TELL ME ABOUT
+    result_match_object = tell_me_about_pattern.match(info)
+    if result_match_object !=None:
+        items = result_match_object.groups()
+        noun = items[1]
+
+        supersets = get_isa_list(noun)
+        if supersets != []:
+            isa_bfs(noun)
+
+        subsets = get_includes_list(noun)
+        if subsets != []:
+            includes_bfs(noun)
+
+        if supersets ==[]  and subsets==[]:
+            print("I don't know")
+            return
+
+        print("That's all I know about \'%s\'."% noun)
+        return
+
+
     print("I do not understand.  You entered: ")
     print(info)
-
 
 def answer_why(x, y):
     'Handles the answering of a Why question.'
@@ -161,7 +193,6 @@ def answer_why(x, y):
 
 
 from functools import reduce
-
 
 def report_chain(x, y):
     'Returns a phrase that describes a chain of facts.'
@@ -195,73 +226,69 @@ def find_chain(x, z):
                 return temp
 
 
-def test():
-    CASE1 = [
-        ("A turtle is a reptile.", None),
-        ("A turtle is a shelled-creature.", None),
-        ("A reptile is an animal.", None),
-        ("An animal is a thing.", None),
-        ("Is a turtle a reptile.", ["Yes, it is."]),
-        ("Is a turtle an animal.", ["Yes, it is."]),
-        ("What is a turtle?", ["A turtle is a reptile."]),
-        ("Why is a turtle an animal?", ["Because a turtle is a reptile, and a reptile is an animal."]),
-        ("Why is an animal a reptile?", ["But that's not true, as far as I know!"]),
-        ("Tell me what you know about \'turtle\', with justification.", [
-            "A turtle is a reptile; you told me that directly.",
-            "A turtle is a shelled-creature; you told me that directly.",
-            "A turtle is an animal, because a turtle is a reptile and a reptile is an animal.",
-            "A turtle is a thing, because a turtle is a reptile, a reptile is an animal, and an animal is a thing.",
-            "That's all I know about \'turtle\'."]),
-    ]
+def answer_tell_me_more(x, y, type="parent"):
+    if x == y:
+        print("Because they are identical.")
+        return
 
-    CASE2 = [
-        ("A BugsBunny is a cartoon.", None),
-        ("A DaffyDuck is a cartoon.", None),
-        ("A BugsBunny is a rabbit.", None),
-        ("A DaffyDuck is a duck.", None),
-        ("A duck is a bird.", None),
-        ("A bird is an animal.", None),
-        ("A rabbit is a mammal.", None),
-        ("A mammal is an animal.", None),
-        ("Is a BugsBunny an animal?", ["Yes, it is."]),
-        ("Is a DaffyDuck a rabbit?", ["No, as far as I have been informed, it is not."]),
-        ("Tell me what you know about \'DaffyDuck\', with justification.", [
-            "A DaffyDuck is a cartoon; you told me that directly.",
-            "A DaffyDuck is a duck; you told me that directly.",
-            "A DaffyDuck is a bird, because a DaffyDuck is a duck and a duck is a bird",
-            "A DaffyDuck is an animal, because a DaffyDuck is a duck, a duck is a bird, and a bird is an animal.",
-            "That's all I know about \'DaffyDuck\'."]),
-        ("Tell me what you know about \'rabbit\', with justification.", [
-            "A rabbit is a mammal; you told me that directly.",
-            "A rabbit is an animal, because a rabbit is a mammal and a mammal is an animal.",
-            "A rabbit is something more general than a BugsBunny, because a BugsBunny is a rabbit.",
-            "That's all I know about \'rabbit\'."]),
-    ]
+    if type =="parent":
+        print("you told me that directly.")
 
-    TESTS = [CASE1, CASE2]
-
-    import sys
-    import io
-    old_stdout = sys.stdout
-    new_stdout = io.StringIO()
-
-    for i, case in enumerate(TESTS):
-        print("======== TEST %d =========" % i)
-        reset()
-        for inp, out in case:
-            print("         INPUT: %s" % inp)
-            sys.stdout = new_stdout
-            process(inp)
-            sys.stdout = old_stdout
-            lines = [x.strip() for x in new_stdout.getvalue().split("\n") if x.strip()]
-            new_stdout = io.StringIO()
-            if out is not None:
-                for l in lines:
-                    print("   YOUR OUTPUT: %s" % l)
-                for l in out:
-                    print("CORRECT OUTPUT: %s" % l)
-                print("")
+    elif isa_test1(x, y):
         print("")
 
+    if type=="child":
+        print()
 
-linneus()
+        return
+
+    print(", because " + report_chain(x, y))
+    return
+
+
+def isa_bfs(x):
+    EXPLORED=[]
+    queue = [x]
+    a1 = get_article(x).capitalize()
+
+    while queue:
+        y = queue.pop(0)
+        if y not in EXPLORED:
+            #Process New Node
+            if y !=x:
+                a2 = get_article(y)
+                if isa_test1(x, y):
+                    print(a1,x ,"is", a2,y+"; you told me that directly.")
+                else:
+                    print(a1, x, "is", a2, y+", because",report_chain(x,y).lower())
+            EXPLORED.append(y)
+            L = get_isa_list(y)
+            for ancestor in L:
+                if ancestor not in EXPLORED:
+                    queue.append(ancestor)
+
+def includes_bfs(x):
+    EXPLORED=[]
+    queue = [x]
+    a1= get_article(x).capitalize()
+
+    while queue:
+        y = queue.pop(0)
+        if y not in EXPLORED:
+            a2=get_article(y)
+            #Process New Node
+            if y !=x:
+                if isa_test1(y,x):
+                    print(a1,x ,"is something more general than", a2,y+", because",a2,y,"is",a1.lower(),x+".")
+                else:
+                    print(a1, x, "is something more general than", a2, y+", because",report_chain(y,x))
+
+            EXPLORED.append(y)
+            L = get_includes_list(y)
+            for successor in L:
+                if successor not in EXPLORED:
+                    queue.append(successor)
+
+    return
+
+#isa_bfs("rabbit")
