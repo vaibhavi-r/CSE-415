@@ -19,11 +19,12 @@
 
 from re import *  # Loads the regular expression module.
 from collections import defaultdict
+import pprint as pp
 
-
-############################
+###########################################################
 #KNOWLEDGE REPRESENTATION
-############################
+
+###########################################################
 
 ISA = defaultdict(list)
 INCLUDES = defaultdict(list)
@@ -31,51 +32,292 @@ ARTICLES = defaultdict(str)
 SYNONYMS = defaultdict(list)
 
 def reset():
-    global ISA, INCLUDES, ARTICLES
+    global ISA, INCLUDES, ARTICLES, SYNONYMS
     ISA = defaultdict(list)
     INCLUDES = defaultdict(list)
     ARTICLES = defaultdict(str)
-
-def store_isa_fact(category1, category2):
-    'Stores one fact of the form A BIRD IS AN ANIMAL'
-    # That is, a member of CATEGORY1 is a member of CATEGORY2
-    ISA[category1].append(category2)
-    INCLUDES[category2].append(category1)
+    SYNONYMS = defaultdict(list)
 
 def get_isa_list(category1):
     'Retrieves any existing list of things that CATEGORY1 is a'
-    return ISA[category1]
+    cat1 = get_root_synonym(category1)
+    return ISA[cat1]
+
 
 def get_includes_list(category1):
     'Retrieves any existing list of things that CATEGORY1 includes'
-    return INCLUDES[category1]
+    cat1 = get_root_synonym(category1)
+    return INCLUDES[cat1]
 
 
 def isa_test1(category1, category2):
+    'Returns True if category 1 is a direct subset of category 2'
+    cat1 = get_root_synonym(category1)
+    cat2 = get_root_synonym(category2)
     'Returns True if category 2 is (directly) on the list for category 1.'
-    return get_isa_list(category1).__contains__(category2)
+    return get_isa_list(cat1).__contains__(cat2)
+
 
 def isa_test(category1, category2, depth_limit=10):
     'Returns True if category 1 is a subset of category 2 within depth_limit levels'
-    if category1 == category2: return True
-    if isa_test1(category1, category2): return True
-    if depth_limit < 2: return False
-    for intermediate_category in get_isa_list(category1):
-        if isa_test(intermediate_category, category2, depth_limit - 1):
+    cat1 = get_root_synonym(category1)
+    cat2 = get_root_synonym(category2)
+
+    if category1 == category2:
+        return True
+    if cat1 == cat2:
+        return True
+    if isa_test1(cat1, cat2):
+        return True
+    if depth_limit < 2:
+        return False
+    for intermediate_category in get_isa_list(cat1):
+        if isa_test(intermediate_category, cat2, depth_limit - 1):
             return True
     return False
+
 
 def store_article(noun, article):
     'Saves the article (in lower-case) associated with a noun.'
     ARTICLES[noun] = article.lower()
 
+
 def get_article(noun):
     'Returns the article associated with the noun, or if none, the empty string.'
     return ARTICLES[noun]
 
-###############################
+
+def store_synonym(category1, category2):
+    global SYNONYMS
+    #avoid repeated addition for self synonym
+    if category1 == category2 and category1 not in SYNONYMS:
+        SYNONYMS[category1].append(category1)
+        return
+    SYNONYMS[category1].append(category2)
+
+
+def get_synonyms_list(noun):
+    root_noun = get_root_synonym(noun)
+    return SYNONYMS[root_noun]
+
+
+def get_root_synonym(noun):
+    for root_noun, synonyms in SYNONYMS.items():
+        if noun in synonyms: #list/ set
+            #print("Accessed Root", root_noun)
+            return root_noun
+    print("No root", noun)
+    return
+
+
+
+def is_graph_cyclic(category1, category2):
+    'Returns true if the statement category1 IS A category2 creates a cycle (antisymmetry check)'
+    if isa_test(category2, category1): #
+        return True
+    else: return False
+
+
+def store_isa_fact(category1, category2, verbose=False):
+    'Stores one fact of the form A BIRD IS AN ANIMAL'
+    # That is, a member of CATEGORY1 is a member of CATEGORY2
+    cat1 = get_root_synonym(category1)
+    cat2 = get_root_synonym(category2)
+
+    # Check if Cycle detected
+    is_cyclic = is_graph_cyclic(cat1, cat2)
+
+    if verbose:
+        print("Will graph become cyclic ? ", is_cyclic)
+
+    if not is_cyclic:
+        ISA[cat1].append(cat2)
+        INCLUDES[cat2].append(cat1)
+        print("I understand.")
+        return
+
+    else:
+        chosen_noun = eliminate_cycle(cat1, cat2, verbose)
+        eq_names = get_synonyms_list(chosen_noun)
+        print("I infer that", listify(eq_names), "are all names for the same thing and I'll call it", chosen_noun+".")
+        return
+
+def listify(names):
+    s=""
+    if len(names) < 2:
+       print("Not enough Synonyms!")
+       return
+
+    last = names[-1]
+    for n in names[:-1]:
+        s += n + ", "
+    s+= "and "+last
+    return s
+
+def eliminate_cycle(category1, category2, verbose = False):
+    'Check if there is a path between 2 to 1, and then eliminate the cycle'
+    cat1 = get_root_synonym(category1)
+    cat2 = get_root_synonym(category2)
+
+    #Check there is no cycle to eliminate
+    if not isa_test(cat2, cat1):
+        print("ERROR: No cycle to eliminate!")
+        return
+
+    if verbose:
+        print('Eliminating Cycle')
+
+    #Paths exist from Category2 to Category 1 for the cycle
+    affected_nodes = get_affected_nodes(cat2, cat1)
+    if len(affected_nodes) < 2:
+        print("ERROR: No path exists")
+
+    return recreate_graph(cat1, cat2, affected_nodes)
+
+def get_affected_nodes(start_category, end_category, verbose = False):
+    'Returns UNORDERED list of elements on all paths from category 1 until category 2'
+    affected_nodes=[]
+    start = get_root_synonym(start_category)
+    end = get_root_synonym(end_category)
+
+    paths = find_all_paths(start, end)
+    affected_nodes = find_nodes_on_any_paths(paths)
+
+    if verbose == True:
+        print("ALL Paths between", start_category, 'and', end_category, '=\n', paths)
+        print("ALL affected nodes between ", start_category, 'and',end_category,'=\n', affected_nodes)
+
+    return affected_nodes
+
+
+def find_all_paths(start, end, path=[]):
+    'find all paths from start_node to end_node in graph'
+    path = path + [start]
+    if start == end:
+        return [path]
+    #no possible movement
+    if ISA[start] ==[]:
+        return []
+
+    paths = [] #list of paths
+    for vertex in ISA[start]:
+        if vertex not in path:
+            extended_paths = find_all_paths(vertex, end, path)
+            for p in extended_paths:
+                paths.append(p)
+    return paths
+
+
+def find_nodes_on_any_paths(paths):
+    'Returns unordered list of all nodes that are on some path from START to END'
+    flat_list = [node for path in paths for node in path]
+    unique_flat_list = list(set(flat_list))
+    return unique_flat_list
+
+
+def recreate_graph(cat1, cat2, equivalent_nouns, verbose=False):
+    'Returns single chosen noun after removing equivalent nouns from the ISA, SYNONYMS and INCLUDES KEYS and VALUES'
+    global SYNONYMS, ISA, INCLUDES
+
+    #Arbitrary choice of cat2 as chosen key for synonyms
+    chosen_noun = cat2
+    equivalent_nouns.remove(chosen_noun)
+    if verbose:
+        print("Chosen Noun = ", chosen_noun)
+        print("Equivalent Nouns to remove = ", equivalent_nouns)
+
+    #Combine all entries of equivalent nouns under chosen noun
+    combine_keys("SYNONYMS", equivalent_nouns, chosen_noun, verbose)
+    combine_keys("INCLUDES", equivalent_nouns, chosen_noun, verbose)
+    combine_keys("ISA", equivalent_nouns, chosen_noun, verbose)
+
+    #Remove mentions of ALL synonyms of chosen noun from ISA, INCLUDES graphs
+    eq_names = get_synonyms_list(chosen_noun)
+    clean_dict("ISA", eq_names, chosen_noun, verbose)
+    clean_dict("INCLUDES", eq_names, chosen_noun, verbose)
+
+    return chosen_noun
+
+def combine_keys(dict_name, eq_keys, chosen_key, verbose=False):
+    'Combines all entries for equivalent keys under chosen key in dictionary d'
+    global ISA, INCLUDES, SYNONYMS
+    d = defaultdict(list)
+    if dict_name =="ISA":
+        d = ISA
+    elif dict_name =="INCLUDES":
+        d = INCLUDES
+    elif dict_name =="SYNONYMS":
+        d = SYNONYMS
+    else: print("Invalid Dictionary name")
+
+    if chosen_key in eq_keys:
+        eq_keys.remove(chosen_key)
+
+    chosen_values =[]
+    #Remove all traces of equivalent nodes
+    for k in eq_keys:
+        vals = d.pop(k)
+        chosen_values.extend(vals)
+
+    existing_values = d.pop(chosen_key,[])
+    new_values = existing_values + chosen_values
+    d[chosen_key] = list(set(new_values))
+
+    if verbose:
+        print("COMBINED DICTIONARY = ", dict_name)
+        pp.pprint(d)
+
+    #Change Global Dictionary
+    if dict_name =="ISA":
+        ISA = d
+    elif dict_name =="INCLUDES":
+        INCLUDES = d
+    elif dict_name == "SYNONYMS":
+        SYNONYMS = d
+
+
+def clean_dict(dict_name,eq_names,chosen_key, verbose=False):
+    'Cleans up ISA and INCLUDES to ensure no mention of synonyms in VALUES instead of chosen noun'
+    global ISA, INCLUDES
+
+    d = defaultdict(list)
+    if dict_name =="ISA":
+        d = ISA
+    elif dict_name =="INCLUDES":
+        d = INCLUDES
+    else:
+        print("Invalid Dictionary name")
+        return
+
+    if len(eq_names) < 1: #eq_names is chosen_key synonyms, excluding chosen_key
+        return #No need to replace anything
+
+    new_d = defaultdict(list)
+    for key, values in d.items():
+        new_values = [chosen_key if x in eq_names else x for x in values]
+        new_values = list(set(new_values))
+        new_d[key] = new_values
+
+    #chosen_key should not appear in ISA[chosen_key], INCLUDES[chosen_key](Symmetry is implied)
+    vals = new_d.pop(chosen_key)
+    if chosen_key in vals and len(vals) >1:
+        vals.remove(chosen_key)
+        new_d[chosen_key] = vals
+
+    if verbose:
+        print("CLEANED DICTIONARY  = ", dict_name)
+        pp.pprint(new_d)
+
+    #Change Global Dictionary
+    if dict_name =="ISA":
+        ISA = new_d
+    elif dict_name =="INCLUDES":
+        INCLUDES = new_d
+
+##############################################################
 #Controlling Logic
-###############################
+##############################################################
+
 def linneus():
     'The main loop; it gets and processes user input, until "bye".'
     print('This is Linneus.  Please tell me "ISA" facts and ask questions.')
@@ -88,7 +330,6 @@ def linneus():
             test()
         else:
             process(info)
-
 
 # Some regular expressions used to parse the user sentences:
 assertion_pattern = compile(r"^(a|an|A|An)\s+([-\w]+)\s+is\s+(a|an)\s+([-\w]+)(\.|\!)*$", IGNORECASE)
@@ -104,17 +345,35 @@ def process(info):
     result_match_object = assertion_pattern.match(info)
     if result_match_object != None:
         items = result_match_object.groups()
-        store_article(items[1], items[0])
-        store_article(items[3], items[2])
-        store_isa_fact(items[1], items[3])
-        print("I understand.")
-        return
+
+        a1 = items[0]
+        a2 = items[2]
+        noun1 = items[1]
+        noun2 = items[3]
+
+        store_article(noun1, a1)
+        store_synonym(noun1,noun1) #Each is a synonym of itself
+
+        if noun1 == noun2:
+            print("I understand. It is obvious.")
+            return
+
+        store_article(noun2, a2)
+        store_synonym(noun2, noun2)  # Each noun is a synonym of itself
+
+        store_isa_fact(noun1, noun2) #Prints response as well
 
     #QUERY
     result_match_object = query_pattern.match(info)
     if result_match_object != None:
         items = result_match_object.groups()
-        answer = isa_test(items[1], items[3])
+        noun1 = items[1]
+        noun2 = items[3]
+
+        root_noun1 = get_root_synonym(noun1)
+        root_noun2 = get_root_synonym(noun2)
+
+        answer = isa_test(root_noun1, root_noun2)
         if answer:
             print("Yes, it is.")
         else:
@@ -149,8 +408,7 @@ def process(info):
     if result_match_object != None:
         items = result_match_object.groups()
         if not isa_test(items[1], items[3]):
-            print("But that's not true, as far as I know!"
-                  )
+            print("But that's not true, as far as I know!")
         else:
             answer_why(items[1], items[3])
         return
@@ -184,6 +442,11 @@ def process(info):
     print("I do not understand. You entered: ")
     print(info)
 
+
+###################################################
+#PROCESSING HELPER FUNCTIONS
+
+###################################################
 
 def answer_why(x, y):
     'Handles the answering of a Why question.'
@@ -279,10 +542,9 @@ def includes_bfs(x):
 
     return
 
-
-#########################
+########################################################
 #TEST CASES
-#########################
+########################################################
 
 CASE1 = [
     ("A turtle is a reptile.", None),
@@ -326,6 +588,7 @@ CASE2 = [
         "That's all I know about \'rabbit\'."]),
 ]
 
+
 def test():
     TESTS = [CASE1, CASE2]
     import sys
@@ -351,7 +614,45 @@ def test():
                 print("")
         print("")
 
-##########################
-#
-##########################
-linneus()
+#########################################################
+# FUNCTION CALLS
+#########################################################
+reset()
+
+def test_insect():
+    A = "insect"
+    B = "organism"
+    C = "creature"
+    D = "living-thing"
+
+    store_article("insect", "an")
+    store_article("organism", "an")
+    store_article("creature", 'a')
+    store_article("living-thing", 'a')
+
+    print("\nSYNONYM Insect")
+    store_synonym(A,A)
+    print("\nSYNONYM Organism")
+    store_synonym(B,B)
+    print("\nSYNONYM Creature")
+    store_synonym(C,C)
+    print("\nSYNONYM Living Thing")
+    store_synonym(D,D)
+
+
+    print("\nFACT: A, B")
+    store_isa_fact("insect", "organism")
+    print("\nFACT: A, C")
+    store_isa_fact("insect", "creature")
+    print("\nFACT: C, D")
+    store_isa_fact("creature","living-thing")
+    print("\nFACT: B, C")
+    store_isa_fact("organism","creature")
+    print("\nFACT: D, B")
+    store_isa_fact("living-thing","organism")
+
+
+    pp.pprint(ISA)
+    pp.pprint(SYNONYMS)
+
+test()
