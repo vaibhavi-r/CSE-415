@@ -168,11 +168,11 @@ def eliminate_cycle(category1, category2, verbose = False):
         print('Eliminating Cycle')
 
     #Paths exist from Category2 to Category 1 for the cycle
-    affected_nodes = get_affected_nodes(cat2, cat1)
+    affected_nodes = get_affected_nodes(cat2, cat1, verbose)
     if len(affected_nodes) < 2:
         print("ERROR: No path exists")
 
-    return recreate_graph(cat1, cat2, affected_nodes)
+    return recreate_graph(cat1, cat2, affected_nodes, verbose)
 
 def get_affected_nodes(start_category, end_category, verbose = False):
     'Returns UNORDERED list of elements on all paths from category 1 until category 2'
@@ -184,8 +184,8 @@ def get_affected_nodes(start_category, end_category, verbose = False):
     affected_nodes = find_nodes_on_any_paths(paths)
 
     if verbose == True:
-        print("ALL Paths between", start_category, 'and', end_category, '=\n', paths)
-        print("ALL affected nodes between ", start_category, 'and',end_category,'=\n', affected_nodes)
+        print("\nALL Paths between", start_category, 'and', end_category, '=\n', paths)
+        print("\nALL affected nodes between ", start_category, 'and',end_category,'=\n', affected_nodes)
 
     return affected_nodes
 
@@ -223,7 +223,7 @@ def recreate_graph(cat1, cat2, equivalent_nouns, verbose=False):
     chosen_noun = cat2
     equivalent_nouns.remove(chosen_noun)
     if verbose:
-        print("Chosen Noun = ", chosen_noun)
+        print("\nChosen Noun = ", chosen_noun)
         print("Equivalent Nouns to remove = ", equivalent_nouns)
 
     #Combine all entries of equivalent nouns under chosen noun
@@ -264,7 +264,7 @@ def combine_keys(dict_name, eq_keys, chosen_key, verbose=False):
     d[chosen_key] = list(set(new_values))
 
     if verbose:
-        print("COMBINED DICTIONARY = ", dict_name)
+        print("\nCOMBINED DICTIONARY = ", dict_name)
         pp.pprint(d)
 
     #Change Global Dictionary
@@ -304,15 +304,20 @@ def clean_dict(dict_name,eq_names,chosen_key, verbose=False):
         vals.remove(chosen_key)
         new_d[chosen_key] = vals
 
-    if verbose:
-        print("CLEANED DICTIONARY  = ", dict_name)
-        pp.pprint(new_d)
-
     #Change Global Dictionary
     if dict_name =="ISA":
         ISA = new_d
     elif dict_name =="INCLUDES":
         INCLUDES = new_d
+
+
+    if verbose:
+        print("\nCLEANED DICTIONARY  = ", dict_name)
+        if dict_name =="ISA":
+            pp.pprint(ISA)
+        else:
+            pp.pprint(INCLUDES)
+
 
 ##############################################################
 #Controlling Logic
@@ -328,6 +333,8 @@ def linneus():
         if info == 'bye': return 'Goodbye now!'
         if info == 'test':
             test()
+        if info == '\n':
+            return
         else:
             process(info)
 
@@ -336,7 +343,7 @@ assertion_pattern = compile(r"^(a|an|A|An)\s+([-\w]+)\s+is\s+(a|an)\s+([-\w]+)(\
 query_pattern = compile(r"^is\s+(a|an)\s+([-\w]+)\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
 what_pattern = compile(r"^What\s+is\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
 why_pattern = compile(r"^Why\s+is\s+(a|an)\s+([-\w]+)\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
-tell_me_about_pattern = compile(r"^Tell\s+me\s+what\s+you\s+know\s+about\s+(\'|\")([-\w]+)(\'|\")\s*,*\s*with\s+justification.|!|\?*$", IGNORECASE)
+tell_me_about_pattern = compile(r"^Tell me what you know about\s+(\'|\")([-\w]+)(\'|\")\s*,*\s*with\s+justification.|!|\?*", IGNORECASE)
 
 
 def process(info):
@@ -361,7 +368,9 @@ def process(info):
         store_article(noun2, a2)
         store_synonym(noun2, noun2)  # Each noun is a synonym of itself
 
-        store_isa_fact(noun1, noun2) #Prints response as well
+        #Store fact and prints response
+        store_isa_fact(noun1, noun2, verbose = True)
+
 
     #QUERY
     result_match_object = query_pattern.match(info)
@@ -385,23 +394,29 @@ def process(info):
     if result_match_object != None:
         items = result_match_object.groups()
         supersets = get_isa_list(items[1])
+        subsets = get_includes_list(items[1])
+        eq_words = get_synonyms_list(items[1])
+        eq_words.remove(items[1])
+
         if supersets != []:
             first = supersets[0]
             a1 = get_article(items[1]).capitalize()
             a2 = get_article(first)
             print(a1 + " " + items[1] + " is " + a2 + " " + first + ".")
             return
+        elif subsets != []:
+            first = subsets[0]
+            a1 = get_article(items[1]).capitalize()
+            a2 = get_article(first)
+            print(a1 + " " + items[1] + " is something more general than " + a2 + " " + first + ".")
+            return
+        elif len(eq_words) >=1:
+            print(a1 + " " + items[1] + " means the same thing as " + listify(eq_words) + ".")
+            return
         else:
-            subsets = get_includes_list(items[1])
-            if subsets != []:
-                first = subsets[0]
-                a1 = get_article(items[1]).capitalize()
-                a2 = get_article(first)
-                print(a1 + " " + items[1] + " is something more general than " + a2 + " " + first + ".")
-                return
-            else:
-                print("I don't know.")
-        return
+            print("I don't know.")
+            return
+
 
     #WHY IS __  A __
     result_match_object = why_pattern.match(info)
@@ -413,24 +428,38 @@ def process(info):
             answer_why(items[1], items[3])
         return
 
+
     #TELL ME ABOUT
     result_match_object = tell_me_about_pattern.match(info)
     if result_match_object !=None:
         items = result_match_object.groups()
+
         noun = items[1]
+        a1 = get_article(noun)
+
+        if noun ==None:
+            return
+
+        root = get_root_synonym(noun)
+        supersets = get_isa_list(root)
+        subsets = get_includes_list(root)
+        eq_words = get_synonyms_list(root)
+        eq_words.remove(noun)
+
+        #Explain all synonyms
+        if len(eq_words) >=1:
+            print(a1 + " " + noun + " means the same thing as " + listify(eq_words) + ".")
 
         #Tell more about ancestors
-        supersets = get_isa_list(noun)
         if supersets != []:
-            isa_bfs(noun)
+            isa_bfs(root)
 
         #Tell more about successors
-        subsets = get_includes_list(noun)
         if subsets != []:
-            includes_bfs(noun)
+            includes_bfs(root)
 
         #No ancestors or successors
-        if supersets ==[]  and subsets==[]:
+        elif supersets ==[]  and subsets==[]:
             a= get_article(noun)
             print(a,noun,"is",a,noun+".")
             return
@@ -442,7 +471,6 @@ def process(info):
     print("I do not understand. You entered: ")
     print(info)
 
-
 ###################################################
 #PROCESSING HELPER FUNCTIONS
 
@@ -450,15 +478,34 @@ def process(info):
 
 def answer_why(x, y):
     'Handles the answering of a Why question.'
+    root1 = get_root_synonym(x)
+    root2 = get_root_synonym(y)
+
     if x == y:
-        print("Because they are identical.")
+        print("Because they are identical")
+    if root1 == root2:
+        print("Because",x, "is another name for",y+".")
         return
+
+    prefix_phrase = get_phrase(x, root1)
+    if prefix_phrase !="":
+        prefix_phrase = prefix_phrase + ", and "
+
+    suffix_phrase = get_phrase(y,root2)
+
     if isa_test1(x, y):
         print("Because you told me that.")
         return
-    print("Because " + report_chain(x, y))
+
+    print("Because " + prefix_phrase + report_chain(x, y)[:-1] + suffix_phrase +".")
     return
 
+
+def get_phrase(noun, root_noun):
+    if noun == root_noun:
+        return ""
+    else:
+        return noun + " is another name for " + root_noun
 
 from functools import reduce
 
@@ -516,7 +563,6 @@ def isa_bfs(x):
                 if ancestor not in EXPLORED:
                     queue.append(ancestor)
 
-
 #Explore the hierarchy downwards (Successors)
 def includes_bfs(x):
     EXPLORED=[]
@@ -539,7 +585,6 @@ def includes_bfs(x):
             for successor in L:
                 if successor not in EXPLORED:
                     queue.append(successor)
-
     return
 
 ########################################################
@@ -588,7 +633,6 @@ CASE2 = [
         "That's all I know about \'rabbit\'."]),
 ]
 
-
 def test():
     TESTS = [CASE1, CASE2]
     import sys
@@ -617,42 +661,6 @@ def test():
 #########################################################
 # FUNCTION CALLS
 #########################################################
-reset()
-
-def test_insect():
-    A = "insect"
-    B = "organism"
-    C = "creature"
-    D = "living-thing"
-
-    store_article("insect", "an")
-    store_article("organism", "an")
-    store_article("creature", 'a')
-    store_article("living-thing", 'a')
-
-    print("\nSYNONYM Insect")
-    store_synonym(A,A)
-    print("\nSYNONYM Organism")
-    store_synonym(B,B)
-    print("\nSYNONYM Creature")
-    store_synonym(C,C)
-    print("\nSYNONYM Living Thing")
-    store_synonym(D,D)
-
-
-    print("\nFACT: A, B")
-    store_isa_fact("insect", "organism")
-    print("\nFACT: A, C")
-    store_isa_fact("insect", "creature")
-    print("\nFACT: C, D")
-    store_isa_fact("creature","living-thing")
-    print("\nFACT: B, C")
-    store_isa_fact("organism","creature")
-    print("\nFACT: D, B")
-    store_isa_fact("living-thing","organism")
-
-
-    pp.pprint(ISA)
-    pp.pprint(SYNONYMS)
-
-test()
+# Launch the program.
+if __name__ == "__main__":
+    linneus()

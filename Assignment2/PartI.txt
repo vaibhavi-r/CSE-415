@@ -1,0 +1,108 @@
+
+3. For each of the following, determine which of the two relations “subset- of” or “element-of” is being represented, and reformulate the statement to make this clearer.
+The first one is done for you. If you find genuine ambiguity in a statement, justify each of the possible interpretations.
+
+
+(a) Fido is a dog.
+Fido ∈ (element-of) dogs
+Fido is a member of the class Dogs.
+Fido is a specific instance of the Dog class.
+
+(b) A parrot is a bird.
+Parrot  ⊆ (subset-of) Bird
+The class of Parrots is a subclass of the class Birds.
+
+(c) Polly is a parrot.
+Polly ∈ (element-of) parrot
+Polly is a member of the class Dogs. Fido is a specific instance of the Dog class.
+
+(d) David Jones is a Jones.
+David Jones ∈ (element-of) Jones.
+
+David Jones is a specific instance, and a member of the Jones class.
+So, considering a family of Jones as Jones class, general traits such as height, weight etc, would have a numeric value associated with David Jones.
+This interpretation makes David Jones similar to Polly and Fido.
+
+
+
+
+(e) “George Washington” is a great name.
+"George Washington" ∈ (element-of) Great Name
+The string "George Washington" is a member of the class Great Names.
+Thus any properties that determine a great name , such as Coolness, or number of letters have a specific value in the case of the string "George Washington".
+
+(f) Artificial intelligence is a state of mind.
+This is an AMBIGUOUS statement.
+
+Artificial intelligence ∈ (element-of) State of Mind
+Artificial
+
+
+
+Artificial intelligence  ⊆ (subset-of) State of Mind
+AI, if interpreted, as a human-like machine intelligence can be a subset of the class State of Mind.
+
+State of Mind can have methods and properties like number of neurons firing, dopamine count etc, and different scores for emotions.
+AI can be a subset in the sense that it inherits properties from a state of mind, but implements them in it's own ways..
+
+So the method to express or measure happiness in an AI  will be different from the class State of mind's method to express or measure happiness.
+
+
+
+
+4. For each of the following relations, state whether or not it is reflexive, whether or not it is symmetric, whether or not it is transitive, whether or not it is antisymmetric, and whether or not it is a partial order.
+For each example, let the set S on which the relation is defined be the set of elements mentioned in that example.
+
+(a) {(a, a)}
+
+S = {a}
+
+REFLEXIVE = Yes
+SYMMETRIC = Yes
+ANTI-SYMMETRIC = No
+TRANSITIVE = Yes
+PARTIAL ORDER = Yes
+
+-----------------------------------------
+(b) {(a, b), (a, c), (b, c)}
+
+S = {a,b,c}
+
+REFLEXIVE = Yes
+SYMMETRIC =
+ANTI-SYMMETRIC =
+TRANSITIVE =
+PARTIAL ORDER =
+
+-----------------------------------------
+
+
+(c) {(a, a), (a, b), (b, b), (b, c), (a, c), (c, c)}
+S = {a,b,c}
+
+REFLEXIVE =
+SYMMETRIC =
+ANTI-SYMMETRIC =
+TRANSITIVE =
+PARTIAL ORDER =
+-----------------------------------------
+
+(d) {(a, b), (b, c)}
+
+S = {a,b,c}
+
+REFLEXIVE =
+SYMMETRIC =
+ANTI-SYMMETRIC =
+TRANSITIVE =
+PARTIAL ORDER =
+-----------------------------------------
+
+
+(e) {}
+REFLEXIVE =
+SYMMETRIC =
+ANTI-SYMMETRIC =
+TRANSITIVE =
+PARTIAL ORDER =
+-----------------------------------------
