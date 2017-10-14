@@ -81,7 +81,7 @@ assertion_pattern = compile(r"^(a|an|A|An)\s+([-\w]+)\s+is\s+(a|an)\s+([-\w]+)(\
 query_pattern = compile(r"^is\s+(a|an)\s+([-\w]+)\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
 what_pattern = compile(r"^What\s+is\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
 why_pattern = compile(r"^Why\s+is\s+(a|an)\s+([-\w]+)\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
-tell_me_about_pattern = compile(r"^Tell\s+me\s+what\s+you\s+know\s+about\s+(\'|\")([-\w]+)(\'|\")\s*,*\s*with\s+justification.|!|\?*$", IGNORECASE)
+tell_me_about_pattern = compile(r"^(Tell\s+me\s+what\s+you\s+know\s+about)\s+(\'|\")([-\w]+)(\'|\")\s*,*\s*(with\s+justification)(.|!|\?)*$", IGNORECASE)
 
 
 def process(info):
@@ -145,7 +145,7 @@ def process(info):
     result_match_object = tell_me_about_pattern.match(info)
     if result_match_object !=None:
         items = result_match_object.groups()
-        noun = items[1]
+        noun = items[2]
 
         #Tell more about ancestors
         supersets = get_isa_list(noun)
@@ -340,6 +340,7 @@ def test():
 ##########################
 #FUNCTION CALL
 ##########################
-linneus()
+if __name__ == "__main__":
+    linneus()
 
 

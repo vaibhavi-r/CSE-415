@@ -6,6 +6,7 @@ def test_insect():
     B = "organism"
     C = "creature"
     D = "living-thing"
+    reset()
 
     store_article("insect", "an")
     store_article("organism", "an")

@@ -30,6 +30,7 @@ ISA = defaultdict(list)
 INCLUDES = defaultdict(list)
 ARTICLES = defaultdict(str)
 SYNONYMS = defaultdict(list)
+ALL_NOUNS = set()
 
 def reset():
     global ISA, INCLUDES, ARTICLES, SYNONYMS
@@ -43,12 +44,10 @@ def get_isa_list(category1):
     cat1 = get_root_synonym(category1)
     return ISA[cat1]
 
-
 def get_includes_list(category1):
     'Retrieves any existing list of things that CATEGORY1 includes'
     cat1 = get_root_synonym(category1)
     return INCLUDES[cat1]
-
 
 def isa_test1(category1, category2):
     'Returns True if category 1 is a direct subset of category 2'
@@ -89,24 +88,45 @@ def get_article(noun):
 
 def store_synonym(category1, category2):
     global SYNONYMS
-    #avoid repeated addition for self synonym
-    if category1 == category2 and category1 not in SYNONYMS:
-        SYNONYMS[category1].append(category1)
-        return
-    SYNONYMS[category1].append(category2)
+
+    #avoid any addition for self synonym
+    #if category1 == category2 and category1 not in SYNONYMS:
+    #    SYNONYMS[category1].append(category1)
+    #    return
+    if category1 !=category2:
+        SYNONYMS[category1].append(category2)
 
 
 def get_synonyms_list(noun):
+    'Returns list of all equivalent nouns apart from given noun'
     root_noun = get_root_synonym(noun)
-    return SYNONYMS[root_noun]
+    if root_noun == noun:
+        return SYNONYMS[root_noun]
+
+    else:
+        syn = SYNONYMS[root_noun]
+        if syn== None:
+            return []
+
+        if root_noun not in syn:
+            syn.append(root_noun)
+        if noun in syn:
+            syn.remove(noun)
+
+        return syn
 
 
 def get_root_synonym(noun):
+    if noun in SYNONYMS:
+        return noun
+
     for root_noun, synonyms in SYNONYMS.items():
         if noun in synonyms: #list/ set
             #print("Accessed Root", root_noun)
             return root_noun
-    print("No root", noun)
+    if noun not in SYNONYMS:
+        SYNONYMS[noun]=[]
+        return noun
     return
 
 
@@ -117,12 +137,24 @@ def is_graph_cyclic(category1, category2):
         return True
     else: return False
 
-
 def store_isa_fact(category1, category2, verbose=False):
     'Stores one fact of the form A BIRD IS AN ANIMAL'
     # That is, a member of CATEGORY1 is a member of CATEGORY2
     cat1 = get_root_synonym(category1)
     cat2 = get_root_synonym(category2)
+
+    is_in_isa = False
+    is_in_includes = False
+
+    if cat1 in ISA and cat2 in ISA[cat1]:
+        is_in_isa = True
+    if cat2 in INCLUDES and cat1 in INCLUDES[cat2]:
+        is_in_includes = True
+
+    #Prevent duplicate entry of same ISA /INCLUDES relation
+    if is_in_includes and is_in_isa:
+        print("I understand.")
+        return
 
     # Check if Cycle detected
     is_cyclic = is_graph_cyclic(cat1, cat2)
@@ -137,20 +169,36 @@ def store_isa_fact(category1, category2, verbose=False):
         return
 
     else:
+        print("CYCLE DETECTED!!")
         chosen_noun = eliminate_cycle(cat1, cat2, verbose)
-        eq_names = get_synonyms_list(chosen_noun)
-        print("I infer that", listify(eq_names), "are all names for the same thing and I'll call it", chosen_noun+".")
+        eq_names = SYNONYMS[chosen_noun]
+
+        if chosen_noun ==None or len(eq_names)<1:
+            print("WHAT HAS HAPPENED?")
+            return
+
+        same_names = eq_names.append(chosen_noun)
+        print("I infer that", listify(eq_names), "are all names for the same thing and I'll call it", str(chosen_noun)+".")
         return
 
 def listify(names):
-    s=""
-    if len(names) < 2:
+    if names ==None or names ==[]:
+        print("NO SYNONYMS")
+        return ""
+
+    if len(names) < 1:
        print("Not enough Synonyms!")
-       return
+       return ""
+
+    s=""
+
+    if len(names) ==1:
+        s = names[0]
+        return s
 
     last = names[-1]
     for n in names[:-1]:
-        s += n + ", "
+        s = s + n + ", "
     s+= "and "+last
     return s
 
@@ -221,7 +269,9 @@ def recreate_graph(cat1, cat2, equivalent_nouns, verbose=False):
 
     #Arbitrary choice of cat2 as chosen key for synonyms
     chosen_noun = cat2
-    equivalent_nouns.remove(chosen_noun)
+    if chosen_noun in equivalent_nouns:
+        equivalent_nouns.remove(chosen_noun)
+
     if verbose:
         print("\nChosen Noun = ", chosen_noun)
         print("Equivalent Nouns to remove = ", equivalent_nouns)
@@ -232,7 +282,7 @@ def recreate_graph(cat1, cat2, equivalent_nouns, verbose=False):
     combine_keys("ISA", equivalent_nouns, chosen_noun, verbose)
 
     #Remove mentions of ALL synonyms of chosen noun from ISA, INCLUDES graphs
-    eq_names = get_synonyms_list(chosen_noun)
+    eq_names = SYNONYMS[chosen_noun]
     clean_dict("ISA", eq_names, chosen_noun, verbose)
     clean_dict("INCLUDES", eq_names, chosen_noun, verbose)
 
@@ -241,6 +291,7 @@ def recreate_graph(cat1, cat2, equivalent_nouns, verbose=False):
 def combine_keys(dict_name, eq_keys, chosen_key, verbose=False):
     'Combines all entries for equivalent keys under chosen key in dictionary d'
     global ISA, INCLUDES, SYNONYMS
+
     d = defaultdict(list)
     if dict_name =="ISA":
         d = ISA
@@ -257,15 +308,18 @@ def combine_keys(dict_name, eq_keys, chosen_key, verbose=False):
     #Remove all traces of equivalent nodes
     for k in eq_keys:
         vals = d.pop(k)
-        chosen_values.extend(vals)
+        chosen_values.extend(vals)  #Add all synonyms of k
 
     existing_values = d.pop(chosen_key,[])
     new_values = existing_values + chosen_values
-    d[chosen_key] = list(set(new_values))
 
-    if verbose:
-        print("\nCOMBINED DICTIONARY = ", dict_name)
-        pp.pprint(d)
+    if dict_name =="SYNONYMS":
+        new_values.extend(eq_keys) #add eq words as synonyms of chosen words also
+
+    if chosen_key in new_values:
+        new_values.remove(chosen_key)
+
+    d[chosen_key] = list(set(new_values))
 
     #Change Global Dictionary
     if dict_name =="ISA":
@@ -275,10 +329,20 @@ def combine_keys(dict_name, eq_keys, chosen_key, verbose=False):
     elif dict_name == "SYNONYMS":
         SYNONYMS = d
 
+    if verbose:
+        print("\nCOMBINED DICTIONARY = ", dict_name)
+        pp.pprint(d)
+
+
 
 def clean_dict(dict_name,eq_names,chosen_key, verbose=False):
     'Cleans up ISA and INCLUDES to ensure no mention of synonyms in VALUES instead of chosen noun'
     global ISA, INCLUDES
+
+    if verbose:
+        print("\nCleaning Dictionary ", dict_name)
+        print("Chosen Noun: ", chosen_key)
+        print("Values to Remove: ", eq_names)
 
     d = defaultdict(list)
     if dict_name =="ISA":
@@ -290,6 +354,7 @@ def clean_dict(dict_name,eq_names,chosen_key, verbose=False):
         return
 
     if len(eq_names) < 1: #eq_names is chosen_key synonyms, excluding chosen_key
+
         return #No need to replace anything
 
     new_d = defaultdict(list)
@@ -331,9 +396,8 @@ def linneus():
     while True:
         info = input('Enter an ISA fact, or "bye" here: ')
         if info == 'bye': return 'Goodbye now!'
-        if info == 'test':
-            test()
-        if info == '\n':
+        elif info == 'test': test()
+        elif info == '\n':
             return
         else:
             process(info)
@@ -343,7 +407,7 @@ assertion_pattern = compile(r"^(a|an|A|An)\s+([-\w]+)\s+is\s+(a|an)\s+([-\w]+)(\
 query_pattern = compile(r"^is\s+(a|an)\s+([-\w]+)\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
 what_pattern = compile(r"^What\s+is\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
 why_pattern = compile(r"^Why\s+is\s+(a|an)\s+([-\w]+)\s+(a|an)\s+([-\w]+)(\?\.)*", IGNORECASE)
-tell_me_about_pattern = compile(r"^Tell me what you know about\s+(\'|\")([-\w]+)(\'|\")\s*,*\s*with\s+justification.|!|\?*", IGNORECASE)
+tell_me_about_pattern = compile(r"^(Tell\s+me\s+what\s+you\s+know\s+about)\s+(\'|\")([-\w]+)(\'|\")\s*,*\s*(with\s+justification)(.|!|\?)*$", IGNORECASE)
 
 
 def process(info):
@@ -370,6 +434,7 @@ def process(info):
 
         #Store fact and prints response
         store_isa_fact(noun1, noun2, verbose = True)
+        return
 
 
     #QUERY
@@ -393,25 +458,27 @@ def process(info):
     result_match_object = what_pattern.match(info)
     if result_match_object != None:
         items = result_match_object.groups()
-        supersets = get_isa_list(items[1])
-        subsets = get_includes_list(items[1])
-        eq_words = get_synonyms_list(items[1])
-        eq_words.remove(items[1])
+        noun = items[1]
+        supersets = get_isa_list(noun)
+        subsets = get_includes_list(noun)
+        eq_words = get_synonyms_list(noun)
+        if noun in eq_words:
+            eq_words.remove(noun)
+
+        a1 = get_article(noun).capitalize()
 
         if supersets != []:
             first = supersets[0]
-            a1 = get_article(items[1]).capitalize()
             a2 = get_article(first)
-            print(a1 + " " + items[1] + " is " + a2 + " " + first + ".")
+            print(a1 + " " + noun + " is " + a2 + " " + first + ".")
             return
         elif subsets != []:
             first = subsets[0]
-            a1 = get_article(items[1]).capitalize()
             a2 = get_article(first)
-            print(a1 + " " + items[1] + " is something more general than " + a2 + " " + first + ".")
+            print(a1 + " " + noun + " is something more general than " + a2 + " " + first + ".")
             return
-        elif len(eq_words) >=1:
-            print(a1 + " " + items[1] + " means the same thing as " + listify(eq_words) + ".")
+        elif eq_words !=[]:
+            print(a1 + " " + noun + " means the same thing as " + listify(eq_words) + ".")
             return
         else:
             print("I don't know.")
@@ -422,10 +489,13 @@ def process(info):
     result_match_object = why_pattern.match(info)
     if result_match_object != None:
         items = result_match_object.groups()
-        if not isa_test(items[1], items[3]):
+        noun1 = items[1]
+        noun2 = items[3]
+
+        if not isa_test(noun1, noun2):
             print("But that's not true, as far as I know!")
         else:
-            answer_why(items[1], items[3])
+            answer_why(noun1, noun2)
         return
 
 
@@ -434,20 +504,26 @@ def process(info):
     if result_match_object !=None:
         items = result_match_object.groups()
 
-        noun = items[1]
+        noun = items[2]
         a1 = get_article(noun)
-
-        if noun ==None:
-            return
 
         root = get_root_synonym(noun)
         supersets = get_isa_list(root)
         subsets = get_includes_list(root)
-        eq_words = get_synonyms_list(root)
-        eq_words.remove(noun)
+        eq_words = get_synonyms_list(noun)
+        if noun in eq_words:
+            eq_words.remove(noun)
+
+        #print("SYNONYMS OF ", noun, eq_words)
+        #print("ISA")
+        #pp.pprint(ISA)
+        #print("SYNONYMS")
+        #pp.pprint(SYNONYMS)
+        #print("INCLUDES")
+        #pp.pprint(INCLUDES)
 
         #Explain all synonyms
-        if len(eq_words) >=1:
+        if len(eq_words) > 0:
             print(a1 + " " + noun + " means the same thing as " + listify(eq_words) + ".")
 
         #Tell more about ancestors
@@ -467,9 +543,9 @@ def process(info):
         print("That's all I know about \'%s\'."% noun)
         return
 
-
-    print("I do not understand. You entered: ")
-    print(info)
+    else:
+        print("I do not understand. You entered: ")
+        print(info)
 
 ###################################################
 #PROCESSING HELPER FUNCTIONS
