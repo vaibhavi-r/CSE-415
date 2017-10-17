@@ -14,7 +14,6 @@ from collections import defaultdict
 ISA = defaultdict(list)
 INCLUDES = defaultdict(list)
 ARTICLES = defaultdict(str)
-SYNONYMS = defaultdict(list)
 
 def reset():
     global ISA, INCLUDES, ARTICLES

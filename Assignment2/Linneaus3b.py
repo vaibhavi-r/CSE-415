@@ -23,7 +23,6 @@ import pprint as pp
 
 ###########################################################
 #KNOWLEDGE REPRESENTATION
-
 ###########################################################
 
 ISA = defaultdict(list)
@@ -231,7 +230,7 @@ def get_affected_nodes(start_category, end_category, verbose = False):
     paths = find_all_paths(start, end)
     affected_nodes = find_nodes_on_any_paths(paths)
 
-    if verbose == True:
+    if verbose:
         print("\nALL Paths between", start_category, 'and', end_category, '=\n', paths)
         print("\nALL affected nodes between ", start_category, 'and',end_category,'=\n', affected_nodes)
 
@@ -433,7 +432,7 @@ def process(info):
         store_synonym(noun2, noun2)  # Each noun is a synonym of itself
 
         #Store fact and prints response
-        store_isa_fact(noun1, noun2, verbose = True)
+        store_isa_fact(noun1, noun2)
         return
 
 
@@ -446,6 +445,10 @@ def process(info):
 
         root_noun1 = get_root_synonym(noun1)
         root_noun2 = get_root_synonym(noun2)
+
+        #Both are identical.
+        if root_noun1 == root_noun2:
+            print("Yes, it is. (Synonym)")
 
         answer = isa_test(root_noun1, root_noun2)
         if answer:
@@ -524,7 +527,7 @@ def process(info):
 
         #Explain all synonyms
         if len(eq_words) > 0:
-            print(a1 + " " + noun + " means the same thing as " + listify(eq_words) + ".")
+            print(a1.capitalize() + " " + noun + " means the same thing as " + listify(eq_words) + ".")
 
         #Tell more about ancestors
         if supersets != []:
@@ -537,7 +540,7 @@ def process(info):
         #No ancestors or successors
         elif supersets ==[]  and subsets==[]:
             a= get_article(noun)
-            print(a,noun,"is",a,noun+".")
+            print(a.capitalize(),noun,"is",a,noun+".")
             return
 
         print("That's all I know about \'%s\'."% noun)
