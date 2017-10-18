@@ -15,6 +15,7 @@ to the new priority value.  These adjustments are less than
 '''
 
 import heapq, random
+
 class PriorityQ:
   def __init__(self):
     self.elts = []

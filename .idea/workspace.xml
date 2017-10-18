@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec0cf1e8-4e59-4b28-ba52-96f032f06a36" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Assignment3/AStar.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Assignment3/TowersOfHanoi.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Assignment3/priorityq.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Assignment3/TowersOfHanoi.py" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assignment3/BasicEightPuzzle.py" afterPath="$PROJECT_DIR$/Assignment3/BasicEightPuzzle.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assignment3/ItrBFS.py" afterPath="$PROJECT_DIR$/Assignment3/ItrBFS.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assignment3/ItrDFS.py" afterPath="$PROJECT_DIR$/Assignment3/ItrDFS.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assignment3/priorityq.py" afterPath="$PROJECT_DIR$/Assignment3/priorityq.py" />
     </list>
     <ignored path="CSE-415.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -38,8 +39,8 @@
       <file leaf-file-name="ItrDFS.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Assignment3/ItrDFS.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1080">
-              <caret line="72" column="25" selection-start-line="72" selection-start-column="25" selection-end-line="72" selection-end-column="25" />
+            <state relative-caret-position="-14">
+              <caret line="84" column="0" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -48,18 +49,8 @@
       <file leaf-file-name="ItrBFS.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Assignment3/ItrBFS.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="50" column="24" selection-start-line="50" selection-start-column="24" selection-end-line="50" selection-end-column="24" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TowersOfHanoi.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Assignment3/TowersOfHanoi.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="353">
-              <caret line="142" column="18" selection-start-line="142" selection-start-column="18" selection-end-line="142" selection-end-column="18" />
+            <state relative-caret-position="1500">
+              <caret line="100" column="15" selection-start-line="100" selection-start-column="15" selection-end-line="100" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -68,18 +59,38 @@
       <file leaf-file-name="priorityq.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Assignment3/priorityq.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="353">
-              <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+            <state relative-caret-position="255">
+              <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AStar.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="AStar.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Assignment3/AStar.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BasicEightPuzzle.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Assignment3/BasicEightPuzzle.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="254">
+              <caret line="163" column="49" selection-start-line="163" selection-start-column="49" selection-end-line="163" selection-end-column="49" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TowerOfHanoi.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Assignment3/TowerOfHanoi.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="83" column="17" selection-start-line="83" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -106,20 +117,20 @@
         <option value="$PROJECT_DIR$/Assignment2/Linneaus3b.py" />
         <option value="$PROJECT_DIR$/Assignment2/PartI.txt" />
         <option value="$PROJECT_DIR$/Assignment2/PartII.py" />
-        <option value="$PROJECT_DIR$/Assignment3/ItrDFS.py" />
-        <option value="$PROJECT_DIR$/Assignment3/ItrBFS.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/Assignment3/TowersOfHanoi.py" />
-        <option value="$PROJECT_DIR$/Assignment3/priorityq.py" />
         <option value="$PROJECT_DIR$/Assignment3/AStar.py" />
+        <option value="$PROJECT_DIR$/Assignment3/ItrDFS.py" />
+        <option value="$PROJECT_DIR$/Assignment3/priorityq.py" />
+        <option value="$PROJECT_DIR$/Assignment3/ItrBFS.py" />
+        <option value="$PROJECT_DIR$/Assignment3/BasicEightPuzzle.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="590" />
-    <option name="y" value="31" />
-    <option name="width" value="850" />
-    <option name="height" value="793" />
+    <option name="y" value="22" />
+    <option name="width" value="1440" />
+    <option name="height" value="802" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -187,7 +198,7 @@
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager" selected="Python.PartII">
+  <component name="RunManager" selected="Python.ItrBFS">
     <configuration default="false" name="Linneaus3b" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -201,40 +212,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="CSE-415" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Assignment2/Linneaus3b.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="Linneaus_test" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Assignment2" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="CSE-415" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Assignment2/Linneaus_test.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="basic_tests" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Assignment2" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="CSE-415" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Assignment2/basic_tests.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -269,6 +246,40 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="CSE-415" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Assignment2/PartII.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="ItrDFS" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Assignment3" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="CSE-415" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Assignment3/ItrDFS.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="ItrBFS" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Assignment3" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="CSE-415" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Assignment3/ItrBFS.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -409,18 +420,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.Linneaus3b" />
-      <item index="1" class="java.lang.String" itemvalue="Python.Linneaus_test" />
-      <item index="2" class="java.lang.String" itemvalue="Python.basic_tests" />
-      <item index="3" class="java.lang.String" itemvalue="Python.Linneus_test_cases" />
-      <item index="4" class="java.lang.String" itemvalue="Python.PartII" />
+      <item index="1" class="java.lang.String" itemvalue="Python.Linneus_test_cases" />
+      <item index="2" class="java.lang.String" itemvalue="Python.PartII" />
+      <item index="3" class="java.lang.String" itemvalue="Python.ItrDFS" />
+      <item index="4" class="java.lang.String" itemvalue="Python.ItrBFS" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.PartII" />
-        <item index="1" class="java.lang.String" itemvalue="Python.Linneaus3b" />
-        <item index="2" class="java.lang.String" itemvalue="Python.Linneus_test_cases" />
-        <item index="3" class="java.lang.String" itemvalue="Python.Linneaus_test" />
-        <item index="4" class="java.lang.String" itemvalue="Python.basic_tests" />
+        <item index="0" class="java.lang.String" itemvalue="Python.ItrBFS" />
+        <item index="1" class="java.lang.String" itemvalue="Python.ItrDFS" />
+        <item index="2" class="java.lang.String" itemvalue="Python.PartII" />
+        <item index="3" class="java.lang.String" itemvalue="Python.Linneaus3b" />
+        <item index="4" class="java.lang.String" itemvalue="Python.Linneus_test_cases" />
       </list>
     </recent_temporary>
   </component>
@@ -438,17 +449,17 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="590" y="31" width="850" height="793" extended-state="0" />
+    <frame x="0" y="22" width="1440" height="802" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15078408" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15081044" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32894737" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.49415204" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1430585" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3911111" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3859649" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3991228" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -510,7 +521,7 @@
         <state relative-caret-position="360">
           <caret line="24" column="25" selection-start-line="24" selection-start-column="25" selection-end-line="24" selection-end-column="25" />
           <folding>
-            <element signature="e#735#791#0" expanded="true" />
+            <element signature="e#735#791#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -520,7 +531,7 @@
         <state relative-caret-position="5145">
           <caret line="344" column="0" selection-start-line="344" selection-start-column="0" selection-end-line="344" selection-end-column="0" />
           <folding>
-            <element signature="e#224#280#0" expanded="true" />
+            <element signature="e#224#280#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -554,7 +565,7 @@
         <state relative-caret-position="405">
           <caret line="28" column="27" selection-start-line="28" selection-start-column="27" selection-end-line="28" selection-end-column="27" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -580,7 +591,7 @@
         <state relative-caret-position="360">
           <caret line="24" column="25" selection-start-line="24" selection-start-column="25" selection-end-line="24" selection-end-column="25" />
           <folding>
-            <element signature="e#735#791#0" expanded="true" />
+            <element signature="e#735#791#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -590,7 +601,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#224#280#0" expanded="true" />
+            <element signature="e#224#280#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -608,7 +619,7 @@
         <state relative-caret-position="405">
           <caret line="28" column="27" selection-start-line="28" selection-start-column="27" selection-end-line="28" selection-end-column="27" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -634,7 +645,7 @@
         <state relative-caret-position="360">
           <caret line="24" column="25" selection-start-line="24" selection-start-column="25" selection-end-line="24" selection-end-column="25" />
           <folding>
-            <element signature="e#735#791#0" expanded="true" />
+            <element signature="e#735#791#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -644,7 +655,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#224#280#0" expanded="true" />
+            <element signature="e#224#280#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -662,7 +673,7 @@
         <state relative-caret-position="405">
           <caret line="28" column="27" selection-start-line="28" selection-start-column="27" selection-end-line="28" selection-end-column="27" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -696,7 +707,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#735#791#0" expanded="true" />
+            <element signature="e#735#791#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -749,7 +760,7 @@
         <state relative-caret-position="405">
           <caret line="28" column="27" selection-start-line="28" selection-start-column="27" selection-end-line="28" selection-end-column="27" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -767,16 +778,8 @@
         <state relative-caret-position="5145">
           <caret line="344" column="0" selection-start-line="344" selection-start-column="0" selection-end-line="344" selection-end-column="0" />
           <folding>
-            <element signature="e#224#280#0" expanded="true" />
+            <element signature="e#224#280#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Assignment3/ItrDFS.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1080">
-          <caret line="72" column="25" selection-start-line="72" selection-start-column="25" selection-end-line="72" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -785,7 +788,7 @@
         <state relative-caret-position="15">
           <caret line="24" column="25" selection-start-line="24" selection-start-column="25" selection-end-line="24" selection-end-column="25" />
           <folding>
-            <element signature="e#735#791#0" expanded="true" />
+            <element signature="e#735#791#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -798,26 +801,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Assignment3/ItrBFS.py">
+    <entry file="file://$PROJECT_DIR$/Assignment3/TowersOfHanoi.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="50" column="24" selection-start-line="50" selection-start-column="24" selection-end-line="50" selection-end-column="24" />
+        <state relative-caret-position="180">
+          <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Assignment3/TowersOfHanoi.py">
+    <entry file="file://$PROJECT_DIR$/Assignment3/ItrDFS.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="142" column="18" selection-start-line="142" selection-start-column="18" selection-end-line="142" selection-end-column="18" />
+        <state relative-caret-position="-14">
+          <caret line="84" column="0" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assignment3/ItrBFS.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1500">
+          <caret line="100" column="15" selection-start-line="100" selection-start-column="15" selection-end-line="100" selection-end-column="15" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Assignment3/priorityq.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+        <state relative-caret-position="255">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -826,6 +837,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assignment3/TowerOfHanoi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="83" column="17" selection-start-line="83" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assignment3/BasicEightPuzzle.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="163" column="49" selection-start-line="163" selection-start-column="49" selection-end-line="163" selection-end-column="49" />
           <folding />
         </state>
       </provider>

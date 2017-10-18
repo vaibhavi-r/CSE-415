@@ -6,6 +6,7 @@
 
 import sys
 
+
 if sys.argv == [''] or len(sys.argv) < 2:
     #  import EightPuzzle as Problem
     import TowerOfHanoi as Problem

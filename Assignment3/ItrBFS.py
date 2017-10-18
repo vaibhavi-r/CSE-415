@@ -13,7 +13,7 @@ import sys
 
 if sys.argv == [''] or len(sys.argv) < 2:
     #  import EightPuzzle as Problem
-    import TowersOfHanoi as Problem
+    import TowerOfHanoi as Problem
 else:
     import importlib
 
@@ -61,6 +61,40 @@ def IterativeBFS(initial_state):
             # DO NOT CHANGE THE CODE ABOVE
 
             # TODO: finish BFS implementation
+        COUNT += 1
+        if (COUNT % 32)==0:
+        #if True:
+            # print(".",end="")
+            # if (COUNT % 128)==0:
+            if True:
+                print("COUNT = " + str(COUNT))
+                print("len(OPEN)=" + str(len(OPEN)))
+                print("len(CLOSED)=" + str(len(CLOSED)))
+        L = []
+        for op in Problem.OPERATORS:
+            if op.precond(S):
+                new_state = op.state_transf(S)
+                if not occurs_in(new_state, CLOSED):
+                    L.append(new_state)
+                    BACKLINKS[new_state] = S
+                    # print(Problem.DESCRIBE_STATE(new_state))
+
+        for s2 in L:
+            for i in range(len(OPEN)):
+                if (s2 == OPEN[i]):
+                    del OPEN[i];
+                    break
+
+        OPEN = OPEN + L
+        print_state_list("OPEN", OPEN)
+
+
+
+def print_state_list(name, lst):
+    print(name + " is now: ", end='')
+    for s in lst[:-1]:
+        print(str(s), end=', ')
+    print(str(lst[-1]))
 
 
 # returns a list of states
@@ -77,6 +111,12 @@ def backtrace(S):
         print(s)
     print("\nPath length = " + str(len(path) - 1))
     return path
+
+
+def occurs_in(s1, lst):
+    for s2 in lst:
+        if s1 == s2: return True
+    return False
 
 
 if __name__ == '__main__':
