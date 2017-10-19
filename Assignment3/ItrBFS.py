@@ -65,8 +65,8 @@ def IterativeBFS(initial_state):
         if (COUNT % 32)==0:
         #if True:
             # print(".",end="")
-            # if (COUNT % 128)==0:
-            if True:
+            if (COUNT % 128)==0:
+            #if True:
                 print("COUNT = " + str(COUNT))
                 print("len(OPEN)=" + str(len(OPEN)))
                 print("len(CLOSED)=" + str(len(CLOSED)))

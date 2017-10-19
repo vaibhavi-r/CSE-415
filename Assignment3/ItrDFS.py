@@ -50,14 +50,14 @@ def IterativeDFS(initial_state):
             return
 
         COUNT += 1
-        # if (COUNT % 32)==0:
-        if True:
+#        if (COUNT % 32)==0:
+         #if True:
             # print(".",end="")
-            # if (COUNT % 128)==0:
-            if True:
-                print("COUNT = " + str(COUNT))
-                print("len(OPEN)=" + str(len(OPEN)))
-                print("len(CLOSED)=" + str(len(CLOSED)))
+#            if (COUNT % 128*128)==0:
+            #if True:
+            #    print("COUNT = " + str(COUNT))
+            #    print("len(OPEN)=" + str(len(OPEN)))
+            #    print("len(CLOSED)=" + str(len(CLOSED)))
         L = []
         for op in Problem.OPERATORS:
             if op.precond(S):
