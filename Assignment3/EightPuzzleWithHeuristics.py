@@ -78,7 +78,7 @@ class State:
             elif direction == "UP":
                 blank_offset = +3
             else:
-                print("Invalud Directions")
+                print("Invalid Directions")
                 return False # Invalid direction
 
             # index of tile to swap
@@ -122,6 +122,7 @@ class State:
 
         return news  # return new state
 
+
 def goal_test(s):
     '''If the number 0 is in tile0, 1 is in tile 1, and so forth unti 8 is in tile8, then s is a goal state.'''
     for t in TILES_LIST:
@@ -143,6 +144,51 @@ class Operator:
     def apply(self, s):
         return self.state_transf(s)
 
+h_euclidean = lambda S: euclidean_dist(S)
+h_hamming = lambda S: hamming_dist(S)
+h_manhattan = lambda S: manhattan_dist(S)
+h_custom = lambda S: custom_dist(S)
+
+HEURISTICS = {'h_euclidean': h_euclidean, 'h_hamming': h_hamming,
+              'h_manhattan': h_manhattan, 'h_custom': h_custom}
+
+
+def euclidean_dist(S):
+    if goal_test(S):
+        return 0
+    else:
+        dist = 0
+        for t in TILES_LIST:
+            dist+=0
+
+        return 1
+
+def hamming_dist(S):
+    if goal_test(S):
+        return 0
+    else:
+        dist = 0
+        for t in TILES_LIST:
+            if S.d[t] !=t:
+                dist+=1
+        return dist
+
+def manhattan_dist(S):
+
+    if goal_test(S):
+        return 0
+    else:
+        x = 0
+        y = 0
+        for t in TILES_LIST:
+            x+=1
+        return x + y
+
+
+def custom_dist(S):
+    return 1
+
+
 # </COMMON_CODE>
 
 
@@ -156,7 +202,7 @@ TILES_LIST = range(0,N_tiles)
 # <INITIAL_STATE>
 
 # puzzle0:
-#CREATE_INITIAL_STATE = lambda: State([0, 1, 2, 3, 4, 5, 6, 7, 8])
+CREATE_INITIAL_STATE = lambda: State([0, 1, 2, 3, 4, 5, 6, 7, 8])
 
 # puzzle1a:
 #CREATE_INITIAL_STATE = lambda: State([1, 0, 2, 3, 4, 5, 6, 7, 8])
@@ -165,7 +211,7 @@ TILES_LIST = range(0,N_tiles)
 #CREATE_INITIAL_STATE = lambda: State([3, 1, 2, 4, 0, 5, 6, 7, 8])
 
 # puzzle4a:
-CREATE_INITIAL_STATE = lambda: State([1, 4, 2, 3, 7, 0, 6, 8, 5])
+#CREATE_INITIAL_STATE = lambda: State([1, 4, 2, 3, 7, 0, 6, 8, 5])
 
 #INITIAL_LIST = [0,1,2,3,4,5,6,7,8]
 #CREATE_INITIAL_STATE = lambda: State(INITIAL_LIST)
@@ -199,3 +245,7 @@ if 'BRYTHON' in globals():
     from TowersOfHanoiVisForBrython import render_state_svg_graphics as render_state
     # if 'TKINTER' in globals(): from TicTacToeVisForTKINTER import set_up_gui
     # </STATE_VIS>
+
+
+
+

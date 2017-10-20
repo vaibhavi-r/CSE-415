@@ -12,8 +12,8 @@
 import sys
 
 if sys.argv == [''] or len(sys.argv) < 2:
-    #  import EightPuzzle as Problem
-    import TowerOfHanoi as Problem
+    import BasicEightPuzzle as Problem
+    #import TowerOfHanoi as Problem
 else:
     import importlib
 
@@ -62,32 +62,34 @@ def IterativeBFS(initial_state):
 
             # TODO: finish BFS implementation
         COUNT += 1
-        if (COUNT % 32)==0:
+        #if (COUNT % 32)==0:
         #if True:
             # print(".",end="")
-            if (COUNT % 128)==0:
+            #if (COUNT % 128)==0:
             #if True:
-                print("COUNT = " + str(COUNT))
-                print("len(OPEN)=" + str(len(OPEN)))
-                print("len(CLOSED)=" + str(len(CLOSED)))
+                #print("COUNT = " + str(COUNT))
+                #print("len(OPEN)=" + str(len(OPEN)))
+                #print("len(CLOSED)=" + str(len(CLOSED)))
         L = []
         for op in Problem.OPERATORS:
             if op.precond(S):
                 new_state = op.state_transf(S)
                 if not occurs_in(new_state, CLOSED):
-                    L.append(new_state)
-                    BACKLINKS[new_state] = S
-                    # print(Problem.DESCRIBE_STATE(new_state))
+                    #only update if new_state is not in OPEN
+                    if not occurs_in(new_state, OPEN):
+                        BACKLINKS[new_state] = S
+                        L.append(new_state)
 
-        for s2 in L:
-            for i in range(len(OPEN)):
-                if (s2 == OPEN[i]):
-                    del OPEN[i];
-                    break
+                        # print(Problem.DESCRIBE_STATE(new_state))
+
+#        for s2 in OPEN:
+#            for i in range(len(L)):
+#                if (s2 == OPEN[i]):
+#                    del L[i];
+#                    break
 
         OPEN = OPEN + L
-        print_state_list("OPEN", OPEN)
-
+        #print_state_list("OPEN", OPEN)
 
 
 def print_state_list(name, lst):
