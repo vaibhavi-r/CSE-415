@@ -1,4 +1,4 @@
-'''TowersOfHanoi.py
+'''EightPuzzle with Heuristics.py
 A QUIET2 Solving Tool problem formulation.
 QUIET = Quetzal User Intelligence Enhancing Technology.
 The XML-like tags used here serve to identify key sections of this
@@ -159,9 +159,11 @@ def euclidean_dist(S):
     else:
         dist = 0
         for t in TILES_LIST:
-            dist+=0
-
-        return 1
+            curr = S.d[t]
+            x1,y1 = translate_x_y(curr) #current position of given tile
+            x2,y2 = translate_x_y(t)    #goal position of given tile
+            dist += math.sqrt((x1-x2)(x1-x2) + (y1-y2)(y1-y2))   #Horizontal difference
+        return
 
 def hamming_dist(S):
     if goal_test(S):
@@ -178,12 +180,23 @@ def manhattan_dist(S):
     if goal_test(S):
         return 0
     else:
-        x = 0
-        y = 0
+        dist =0
         for t in TILES_LIST:
-            x+=1
-        return x + y
+            curr = S.d[t]
+            x1,y1 = translate_x_y(curr) #current position of given tile
+            x2,y2 = translate_x_y(t)    #goal position of given tile
 
+            dist += abs(x1-x2)  #Horizontal difference
+            dist += abs(y1-y2)  #Vertical difference
+        return dist
+
+def translate_x_y(num):
+    if num==0:
+        return 0,0
+
+    y = num/3
+    x = num%3
+    return x,y
 
 def custom_dist(S):
     return 1
@@ -202,13 +215,13 @@ TILES_LIST = range(0,N_tiles)
 # <INITIAL_STATE>
 
 # puzzle0:
-CREATE_INITIAL_STATE = lambda: State([0, 1, 2, 3, 4, 5, 6, 7, 8])
+#CREATE_INITIAL_STATE = lambda: State([0, 1, 2, 3, 4, 5, 6, 7, 8])
 
 # puzzle1a:
 #CREATE_INITIAL_STATE = lambda: State([1, 0, 2, 3, 4, 5, 6, 7, 8])
 
 # puzzle2a:
-#CREATE_INITIAL_STATE = lambda: State([3, 1, 2, 4, 0, 5, 6, 7, 8])
+CREATE_INITIAL_STATE = lambda: State([3, 1, 2, 4, 0, 5, 6, 7, 8])
 
 # puzzle4a:
 #CREATE_INITIAL_STATE = lambda: State([1, 4, 2, 3, 7, 0, 6, 8, 5])

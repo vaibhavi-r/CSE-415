@@ -19,7 +19,6 @@ in the Oct. 17 version.
 
 import heapq, random
 
-
 class PriorityQ:
     def __init__(self):
         self.elts = []

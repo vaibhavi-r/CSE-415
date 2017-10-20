@@ -89,7 +89,7 @@ def AStar(initial_state):
             #    print("len(CLOSED)=" + str(len(CLOSED)))
 
 
-        L = []
+  #      L = []
         for op in Problem.OPERATORS:
             if op.precond(S):
                 new_state = op.state_transf(S)
@@ -107,15 +107,16 @@ def AStar(initial_state):
                         BACKLINKS[new_state] = S  #Found better path to new_State
 
                     G_SCORE[new_state] = tentative_g_score
-                    F_SCORE[new_state] = G_SCORE[new_state] + get_h_score(new_state)
+
+                    F_SCORE[new_state] = G_SCORE[new_state] + h_score_fn(new_state)
 
                     #L.append((new_state, F_SCORE[new_state]))
                     #BACKLINKS[new_state] = S
                     # print(Problem.DESCRIBE_STATE(new_state))
 
                     # discovered a new State
-                    if not occurs_in(new_state, OPEN):
-                        OPEN.insert(new_state, F_SCORE)
+                    if not OPEN.__contains__(new_state):
+                        OPEN.insert(new_state, F_SCORE[new_state])
 
 #        for s2 in L:
 #            for i in range(len(OPEN)):
@@ -123,9 +124,11 @@ def AStar(initial_state):
 #                    del OPEN[i];
 #                    break
 
-        OPEN = L + OPEN
-        print_state_list("OPEN", OPEN)
+        #OPEN = L + OPEN
+        #print_state_list("OPEN", OPEN)
+        print(OPEN)
 
+# def print_pq(name)
 
 def print_state_list(name, lst):
     print(name + " is now: ", end='')
@@ -137,6 +140,7 @@ def print_state_list(name, lst):
 def reset_Scores():
     G_SCORE = {}
     F_SCORE = {}
+    H_SCORE = {}
 
 
 def get_G_score(S):
@@ -154,14 +158,6 @@ def get_G_score(S):
     for s in path:
         print(s)
     return path
-
-    return
-
-def get_F_score(S):
-    return
-
-def get_h_score(S):
-    return
 
 def backtrace(S):
     global BACKLINKS
@@ -186,13 +182,8 @@ def occurs_in(s1, lst):
 def initialize_scores(start_state):
     reset_Scores()
     G_SCORE[start_state] = 0
-
-    print("H FUNCTION", h_score_fn, type(h_score_fn))
-    print(h_score_fn(Problem.CREATE_INITIAL_STATE()))
-    #H_SCORE[start_state] = h_score_fn(start_state)
-
-
-    #F_SCORE[start_state] = H_SCORE[start_state]
+    H_SCORE[start_state] = h_score_fn(start_state)
+    F_SCORE[start_state] = H_SCORE[start_state]
 
 
 if __name__ == '__main__':
