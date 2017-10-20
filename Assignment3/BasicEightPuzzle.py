@@ -1,4 +1,4 @@
-'''TowersOfHanoi.py
+'''BasicEightPuzzle.py
 A QUIET2 Solving Tool problem formulation.
 QUIET = Quetzal User Intelligence Enhancing Technology.
 The XML-like tags used here serve to identify key sections of this

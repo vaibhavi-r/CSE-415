@@ -16,9 +16,10 @@ if sys.argv == [''] or len(sys.argv) < 3:
 
 else:
     import importlib
-    Problem = importlib.import_module(sys.argv[0])
-    CHOSEN_HEURISTIC = sys.argv[1]
-    INITIAL_STATE = importlib.import_module(sys.argv[2])
+    Problem = importlib.import_module(sys.argv[1])
+    CHOSEN_HEURISTIC = sys.argv[2]
+    initial_state_file = importlib.import_module(sys.argv[3])
+    INITIAL_STATE = initial_state_file.CREATE_INITIAL_STATE()
     h_score_fn = Problem.HEURISTICS[CHOSEN_HEURISTIC]  # scoring function
 
 

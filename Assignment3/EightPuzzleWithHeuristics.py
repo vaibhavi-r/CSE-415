@@ -230,7 +230,7 @@ CREATE_INITIAL_STATE = lambda: State([3, 1, 2, 4, 0, 5, 6, 7, 8])
 #CREATE_INITIAL_STATE = lambda: State(INITIAL_LIST)
 
 CREATE_GOAL_STATE = lambda: State([0, 1, 2, 3, 4, 5, 6, 7, 8])
-# DUMMY_STATE =  [0,1,2,3,4,5,6,7,8]
+# DUMMY_LIST =  [0,1,2,3,4,5,6,7,8]
 
 # </INITIAL_STATE>
 
