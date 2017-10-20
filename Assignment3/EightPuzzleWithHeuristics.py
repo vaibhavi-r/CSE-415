@@ -144,26 +144,24 @@ class Operator:
     def apply(self, s):
         return self.state_transf(s)
 
+
 h_euclidean = lambda S: euclidean_dist(S)
-h_hamming = lambda S: hamming_dist(S)
+h_hamming   = lambda S: hamming_dist(S)
 h_manhattan = lambda S: manhattan_dist(S)
-h_custom = lambda S: custom_dist(S)
-
-HEURISTICS = {'h_euclidean': h_euclidean, 'h_hamming': h_hamming,
-              'h_manhattan': h_manhattan, 'h_custom': h_custom}
-
+h_custom    = lambda S: custom_dist(S)
 
 def euclidean_dist(S):
     if goal_test(S):
         return 0
     else:
+        import math
         dist = 0
         for t in TILES_LIST:
             curr = S.d[t]
-            x1,y1 = translate_x_y(curr) #current position of given tile
-            x2,y2 = translate_x_y(t)    #goal position of given tile
-            dist += math.sqrt((x1-x2)(x1-x2) + (y1-y2)(y1-y2))   #Horizontal difference
-        return
+            x1,y1 = translate_x_y(curr) #current position of given tile in x-y coordinates
+            x2,y2 = translate_x_y(t)    #goal position of given tile in x-y coordinates
+            dist += math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2))   #Euclidean Distance
+        return dist
 
 def hamming_dist(S):
     if goal_test(S):
@@ -183,8 +181,8 @@ def manhattan_dist(S):
         dist =0
         for t in TILES_LIST:
             curr = S.d[t]
-            x1,y1 = translate_x_y(curr) #current position of given tile
-            x2,y2 = translate_x_y(t)    #goal position of given tile
+            x1,y1 = translate_x_y(curr) #current position of given tile in x-y coordinates
+            x2,y2 = translate_x_y(t)    #goal position of given tile in x-y coordinates
 
             dist += abs(x1-x2)  #Horizontal difference
             dist += abs(y1-y2)  #Vertical difference
@@ -201,6 +199,8 @@ def translate_x_y(num):
 def custom_dist(S):
     return 1
 
+HEURISTICS = {'h_euclidean': h_euclidean, 'h_hamming': h_hamming,
+              'h_manhattan': h_manhattan, 'h_custom': h_custom}
 
 # </COMMON_CODE>
 
@@ -218,10 +218,10 @@ TILES_LIST = range(0,N_tiles)
 #CREATE_INITIAL_STATE = lambda: State([0, 1, 2, 3, 4, 5, 6, 7, 8])
 
 # puzzle1a:
-#CREATE_INITIAL_STATE = lambda: State([1, 0, 2, 3, 4, 5, 6, 7, 8])
+CREATE_INITIAL_STATE = lambda: State([1, 0, 2, 3, 4, 5, 6, 7, 8])
 
 # puzzle2a:
-CREATE_INITIAL_STATE = lambda: State([3, 1, 2, 4, 0, 5, 6, 7, 8])
+#CREATE_INITIAL_STATE = lambda: State([3, 1, 2, 4, 0, 5, 6, 7, 8])
 
 # puzzle4a:
 #CREATE_INITIAL_STATE = lambda: State([1, 4, 2, 3, 7, 0, 6, 8, 5])

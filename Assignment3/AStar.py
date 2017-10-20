@@ -2,7 +2,7 @@
 # A* Search of a problem space.
 # Ver 0.1, October 19, 2017.
 # Usage:
-# python3 AStar.py EightPuzzleWithHeuristics h_euclidean puzzle2a.py
+# python3 AStar.py EightPuzzleWithHeuristics h_euclidean puzzle2a
 
 
 import sys
@@ -22,24 +22,18 @@ else:
     INITIAL_STATE = initial_state_file.CREATE_INITIAL_STATE()
     h_score_fn = Problem.HEURISTICS[CHOSEN_HEURISTIC]  # scoring function
 
-
-def estimate_h_score(S):
-    return h_score_fn(S)
-
-#If state node is not present in G or F score,
+# If state node is not present in G or F score,
 # treat it as Infinity by default
 G_SCORE = {}
 F_SCORE = {}
 H_SCORE = {}
 
-
 print("\nWelcome to A Star Search")
 COUNT = None
 BACKLINKS = {}
 
-
 def runAStar():
-    initial_state = Problem.CREATE_INITIAL_STATE()
+    initial_state = INITIAL_STATE
     print("Initial State:")
     print(initial_state)
     global COUNT, BACKLINKS
@@ -63,12 +57,11 @@ def AStar(initial_state):
     #currently discovered, not yet evaluated states
     OPEN = PriorityQ()
 
-    #initialize score metrics
+    #Calculate F, G, H scores
     initialize_scores(initial_state)
 
     #Only initial node is known as of now
     OPEN.insert(initial_state, F_SCORE[initial_state])
-
 
     while OPEN.isEmpty() !=True:
         S = OPEN.deletemin()
@@ -77,24 +70,22 @@ def AStar(initial_state):
         if Problem.GOAL_TEST(S):
             print(Problem.GOAL_MESSAGE_FUNCTION(S))
             backtrace(S)
-            return
+            return #FOUND GOAL
 
         COUNT += 1
-#        if (COUNT % 32)==0:
-         #if True:
+        if (COUNT % 32)==0:
+#        if True:
             # print(".",end="")
 #            if (COUNT % 128*128)==0:
-            #if True:
-            #    print("COUNT = " + str(COUNT))
-            #    print("len(OPEN)=" + str(len(OPEN)))
-            #    print("len(CLOSED)=" + str(len(CLOSED)))
+            if True:
+                print("COUNT = " + str(COUNT))
+                #print("len(OPEN)=" + str(len(OPEN))) #PriorityQ OPEN doesn't have len()
+                print("len(CLOSED)=" + str(len(CLOSED)))
 
 
-  #      L = []
         for op in Problem.OPERATORS:
             if op.precond(S):
                 new_state = op.state_transf(S)
-
                 if not occurs_in(new_state, CLOSED): #ignore already evaluated neighbors
 
                     #find tentative score of neighbor
@@ -108,57 +99,39 @@ def AStar(initial_state):
                         BACKLINKS[new_state] = S  #Found better path to new_State
 
                     G_SCORE[new_state] = tentative_g_score
-
                     F_SCORE[new_state] = G_SCORE[new_state] + h_score_fn(new_state)
-
-                    #L.append((new_state, F_SCORE[new_state]))
-                    #BACKLINKS[new_state] = S
-                    # print(Problem.DESCRIBE_STATE(new_state))
 
                     # discovered a new State
                     if not OPEN.__contains__(new_state):
                         OPEN.insert(new_state, F_SCORE[new_state])
 
-#        for s2 in L:
-#            for i in range(len(OPEN)):
-#                if (s2 == OPEN[i]):
-#                    del OPEN[i];
-#                    break
+                    # print(Problem.DESCRIBE_STATE(new_state))
+            #print(OPEN)
 
-        #OPEN = L + OPEN
-        #print_state_list("OPEN", OPEN)
-        print(OPEN)
+    #Failure, if goal_test has not succeeded until now
+    print("COULD NOT FIND GOAL")
+    return
 
-# def print_pq(name)
+
+def initialize_scores(start_state):
+    reset_Scores()
+    G_SCORE[start_state] = 0
+    H_SCORE[start_state] = h_score_fn(start_state)
+    F_SCORE[start_state] = H_SCORE[start_state]
+
+def reset_Scores():
+    """
+    Reset just in case run AStar multiple times
+    """
+    G_SCORE = {}
+    F_SCORE = {}
+    H_SCORE = {}
 
 def print_state_list(name, lst):
     print(name + " is now: ", end='')
     for s in lst[:-1]:
         print(str(s), end=', ')
     print(str(lst[-1]))
-
-
-def reset_Scores():
-    G_SCORE = {}
-    F_SCORE = {}
-    H_SCORE = {}
-
-
-def get_G_score(S):
-    global BACKLINKS
-
-    path = []
-    path_length = 0
-
-    while S:
-        path.append(S)
-        # print("In backtrace, S is now: "+str(S))
-        S = BACKLINKS[S]
-    path.reverse()
-    print("Solution path: ")
-    for s in path:
-        print(s)
-    return path
 
 def backtrace(S):
     global BACKLINKS
@@ -174,18 +147,10 @@ def backtrace(S):
         print(s)
     return path
 
-
 def occurs_in(s1, lst):
     for s2 in lst:
         if s1 == s2: return True
     return False
-
-def initialize_scores(start_state):
-    reset_Scores()
-    G_SCORE[start_state] = 0
-    H_SCORE[start_state] = h_score_fn(start_state)
-    F_SCORE[start_state] = H_SCORE[start_state]
-
 
 if __name__ == '__main__':
     runAStar()
