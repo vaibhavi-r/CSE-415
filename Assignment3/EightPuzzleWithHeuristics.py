@@ -192,7 +192,7 @@ def translate_x_y(num):
     if num==0:
         return 0,0
 
-    y = num/3
+    y = num//3
     x = num%3
     return x,y
 
@@ -219,7 +219,7 @@ def linear_conflict_dist(S):
             curr_row = S.d[3*row : (3*row)+3]
 
             common = [x for x in ideal_row if x in curr_row]
-            common_conflicts = [c for c in common_conflicts if ideal_row.index(c) != curr_row.index(c)]
+            common_conflicts = [c for c in common if ideal_row.index(c) != curr_row.index(c)]
 
             if common_conflicts==[] or len(common_conflicts)==1: #No possible conflicting pairs
                 continue
@@ -246,15 +246,15 @@ def linear_conflict_dist(S):
         curr_columns = [[],[],[]]
 
         for idx in range(0,9):
-            ideal_columns[idx/3].append(TILES_LIST[idx])
-            curr_columns[idx/3].append(S.d[idx])
+            ideal_columns[idx//3].append(TILES_LIST[idx])
+            curr_columns[idx//3].append(S.d[idx])
 
         for col in range(0,3):
             ideal_col = ideal_columns[col]
             curr_col = curr_columns[col]
 
             common = [x for x in ideal_col if x in curr_col]  #Elements that are in their correct column
-            common_conflicts = [c for c in common_conflicts if ideal_col.index(c) != curr_col.index(c)] #Elements that are in correct column, but not correct position
+            common_conflicts = [c for c in common if ideal_col.index(c) != curr_col.index(c)] #Elements that are in correct column, but not correct position
 
             if common_conflicts == [] or len(common_conflicts) == 1:  # No possible conflicting pairs
                 continue
