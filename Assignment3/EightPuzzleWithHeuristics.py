@@ -148,7 +148,7 @@ class Operator:
 h_euclidean = lambda S: euclidean_dist(S)
 h_hamming   = lambda S: hamming_dist(S)
 h_manhattan = lambda S: manhattan_dist(S)
-h_custom    = lambda S: custom_dist(S)
+h_custom    = lambda S: linear_conflict_dist(S)
 
 def euclidean_dist(S):
     if goal_test(S):
@@ -173,8 +173,8 @@ def hamming_dist(S):
                 dist+=1
         return dist
 
-def manhattan_dist(S):
 
+def manhattan_dist(S):
     if goal_test(S):
         return 0
     else:
@@ -196,14 +196,94 @@ def translate_x_y(num):
     x = num%3
     return x,y
 
-def custom_dist(S):
-    return 1
+def linear_conflict_dist(S):
+    '''Idea for custom linear conflict distance was refined
+    by using https: // heuristicswiki.wikispaces.com / N + -+Puzzle
+
+    For every linear conflict found where 2 tiles need to cross each other in same line,
+    to get to their end position, add 2 to manhattan distance
+    '''
+
+    if goal_test(S):
+        return 0
+    else:
+        #Calculate Manhattan distance for whole board
+        m_dist=manhattan_dist(S)
+
+        #Calculate extra offsets for linear conflicts
+        lc_offset = 0
+
+        #Rows
+        for row in range(0,3):
+            ideal_row = TILES_LIST[3*row:(3*row)+3]
+            curr_row = S.d[3*row : (3*row)+3]
+
+            common = [x for x in ideal_row if x in curr_row]
+            common_conflicts = [c for c in common_conflicts if ideal_row.index(c) != curr_row.index(c)]
+
+            if common_conflicts==[] or len(common_conflicts)==1: #No possible conflicting pairs
+                continue
+
+            if len(common_conflicts)==2:
+                i,j = common_conflicts[0], common_conflicts[1]
+                if ideal_row.index(i) < ideal_row.index(j) and curr_row.index(i) > curr_row.index(j):
+                    lc_offset+=2
+
+            elif len(common_conflicts) ==3:
+                i,j,k = common_conflicts[0], common_conflicts[1], common_conflicts[2]
+
+                if ideal_row.index(i) < ideal_row.index(j) and curr_row.index(i) > curr_row.index(j):
+                    lc_offset+=2
+
+                if ideal_row.index(j) < ideal_row.index(k) and curr_row.index(j) > curr_row.index(k):
+                    lc_offset += 2
+
+                if ideal_row.index(k) < ideal_row.index(i) and curr_row.index(k) > curr_row.index(i):
+                    lc_offset += 2
+
+        #Columns
+        ideal_columns = [[],[],[]]
+        curr_columns = [[],[],[]]
+
+        for idx in range(0,9):
+            ideal_columns[idx/3].append(TILES_LIST[idx])
+            curr_columns[idx/3].append(S.d[idx])
+
+        for col in range(0,3):
+            ideal_col = ideal_columns[col]
+            curr_col = curr_columns[col]
+
+            common = [x for x in ideal_col if x in curr_col]  #Elements that are in their correct column
+            common_conflicts = [c for c in common_conflicts if ideal_col.index(c) != curr_col.index(c)] #Elements that are in correct column, but not correct position
+
+            if common_conflicts == [] or len(common_conflicts) == 1:  # No possible conflicting pairs
+                continue
+
+            if len(common_conflicts) == 2:
+                i, j = common_conflicts[0], common_conflicts[1]
+                if ideal_col.index(i) < ideal_col.index(j) and curr_col.index(i) > curr_col.index(j):
+                    lc_offset += 2
+
+            elif len(common_conflicts) == 3:
+                i, j, k = common_conflicts[0], common_conflicts[1], common_conflicts[2]
+
+                if ideal_col.index(i) < ideal_col.index(j) and curr_col.index(i) > curr_col.index(j):
+                    lc_offset += 2
+
+                if ideal_col.index(j) < ideal_col.index(k) and curr_col.index(j) > curr_col.index(k):
+                    lc_offset += 2
+
+                if ideal_col.index(k) < ideal_col.index(i) and curr_col.index(k) > curr_col.index(i):
+                    lc_offset += 2
+
+
+        return lc_offset + m_dist
+
+
 
 HEURISTICS = {'h_euclidean': h_euclidean, 'h_hamming': h_hamming,
               'h_manhattan': h_manhattan, 'h_custom': h_custom}
-
 # </COMMON_CODE>
-
 
 
 # <COMMON_DATA>
