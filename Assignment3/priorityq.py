@@ -3,6 +3,7 @@ the remove operation as well as insert and deletemin.
 It is based on the heapdict implementation at
 https://github.com/DanielStutzbach/heapdict
  S. Tanimoto, Oct. 20, 2017.
+A method getpriority(elt) was added on Oct. 21.
 
 This data structure is provided to support implementations
 of A* in Python.
@@ -23,12 +24,18 @@ class PriorityQ:
     # Returns the element having smallest priority value.
     return self.h.popitem()
 
+  def isEmpty(self):
+    return len(self.h) == 0
+
   def remove(self, elt):
     # Removes an arbitrary element from the priority queue.
     # This allows updating a priority value for a key by
     # first removing it and then inserting it again with its
     # new priority value.
     del self.h[elt]  # invokes the __delitem__ method of heapdict.
+
+  def getpriority(self, elt):
+    return self.h[elt]
 
   def __len__(self):
     return len(self.h)

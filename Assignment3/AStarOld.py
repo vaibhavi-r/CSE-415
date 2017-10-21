@@ -8,6 +8,7 @@
 import sys
 from priorityq import PriorityQ
 
+
 if sys.argv == [''] or len(sys.argv) < 3:
     import EightPuzzleWithHeuristics as Problem
     CHOSEN_HEURISTIC = 'h_manhattan'
@@ -22,11 +23,6 @@ else:
     INITIAL_STATE = initial_state_file.CREATE_INITIAL_STATE()
     h_score_fn = Problem.HEURISTICS[CHOSEN_HEURISTIC]  # scoring function
 
-# If state node is not present in G or F score,
-# treat it as Infinity by default
-G_SCORE = {}
-F_SCORE = {}
-H_SCORE = {}
 
 print("\nWelcome to A Star Search")
 COUNT = None
