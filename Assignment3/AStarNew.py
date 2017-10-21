@@ -114,11 +114,11 @@ def AStar(initial_state):
                     G_SCORE[new_state] = tentative_g_score
                     F_SCORE[new_state] = G_SCORE[new_state] + h_score_fn(new_state)
 
-                    # Delete previous F-Score in PriorityQ if it exists
+                    # Delete previous F-score in PriorityQ if it exists
                     if OPEN.__contains__(new_state):
                         OPEN.remove(new_state)
 
-                    #Update PriorityQ
+                    #Update PriorityQ with new priority
                     OPEN.insert(new_state, F_SCORE[new_state])
 
                 # print(Problem.DESCRIBE_STATE(new_state))
