@@ -1,0 +1,74 @@
+Question 1:
+------------
+"Tic-Tac-Toe" (5 points)
+How many distinct states are possible in a game of Tic-Tac-Toe after 7 moves have been made (4 Xs and 3 Os)?
+Consider two states to be distinct even if rotating the board by 90 degrees or 180 degrees,
+or flipping the board vertically or horizontally, turns one state into the other.
+
+However if the same arrangement of the board can be reached by multiple move sequences, still consider that to be just one state. In this exercise, ignore the fact that the game should end as soon as a player gets three in a row; if X's first three moves result in three in a row, X still plays a fourth move.
+
+
+Answer: There are 9 distinct spots available in a game of Tic-Tac-Toe.
+Each spot can be empty or filled with an X, or an O.
+
+With the asssumption that the various sequence of moves that lead to the same arrangement don't matter, we can choose to consider all the Xs equivalent to each other, and all the Os equivalent to each other. (The first X is indistinguishable from the X placed in the second move.)
+
+A = Number of ways to choose 7 spots out of 9 to fill : 9C7 = 9*8/2 = 36
+
+B = Number of ways to permute the 4Xs and 3 Os in the chosen 7 spots : 7! / 4! 3! = 7.6.5/6 = 35
+
+
+C = Total Number of distinct states =  A * B = 36*35 = ___
+
+Answer = ___
+
+------------------------------------------------------------------------------------------------------------------------
+Question 2:
+------------
+"Tric-Trac-Toe" (10 points)
+Let us define the game of Tric-Trac-Toe as a game for 3 players, X, Y, and Z. The object is to get 3 in a row. However, they play on a 3D board that is 4 by 4 by 4. They take turns in a round-robin protocol. Give an expression for the number of distinct states that can be achieved after 6 moves and evaluate it to a number. Such a state should have 2 X's, 2 Y's, and 2 Z's on the board, filling six of the 64 available voxels. You may assume that 2 states are distinct even if one can be matched to another by some rotation of the cube.
+
+Answer:
+Given that the states are distinct, even if they can be matched by rotation, we can assume that the cube is stationary, and each vowel is a distinct cell unlike any other.
+
+We can safely assume that all X's, all Y's , and all Z's are equivalent and interchangeable within the same kind. (Order of placement of 2 X's doesn't matter)
+
+Out of 64 voxels, we need to choose 6 total spots to populate with the Xs/Ys/Zs
+
+A = 64C6 = 64.63.62.61.60.59/6.5.4.3.2 = 64.63.62.62.59/6.2
+
+Out of the 6 chosen spots, we need to populate 2 Xs, 2 Y's and 2 Zs
+B = Number of ways to permute 2 X's 2 Y's and 2 Z's = 6! / 2! 2! 2! = 6.5.4.3/ 4 = 6.5.3
+
+
+Total Number of distinct states = A * B = 
+
+------------------------------------------------------------------------------------------------------------------------
+Question 3:
+-----------
+Husky Paperweights (Optional, for 5 points of extra credit)
+The Husky Paperweight Company sells a line of paperweights that come in the following sizes: 3 cm by 3 cm, 5 cm by 5 cm, 7 cm by 7 cm, etc. Thus a typical paperweight is of size n by n, measured in centimeters. Its design is an array of purple and gold squares each of size 1 centimeter on a size. The underside is just black felt, with no pattern.
+
+The company promotes the paperweights by explaining how great a variety of patterns they come in, because the arrangements of purple vs. gold in the grid positions are more or less random. Give a formula for the number of distinct paperweights having size n by n. This formula should consider the possibility of various symmetries and double-counting situations, and it should not do any double counting.
+
+Hints: 
+(1) patterns with 4-way (90-degree) rotational symmetry are not double counted; 
+patterns with 2-way (180-degree) rotational symmetry, but not 4-way symmetry, are double counted; 
+other patterns are quadruple counted. 
+
+(2) try working out all the patterns for n=1 and some of the patterns for n=3 and use those as a check on your formulas.
+
+Answer:
+
+n=1 Number of patterns = 2
+
+n=3 Number of patterns = 
+
+0P, 9G
+9P, 0G
+
+
+
+
+
+
