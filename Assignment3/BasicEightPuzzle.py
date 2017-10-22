@@ -1,6 +1,4 @@
-'''
-Name    = Vaibhavi Rangarajan
-UWNetID = vaibhavi
+'''Name    = Vaibhavi Rangarajan, UWNetID = vaibhavi
 
 BasicEightPuzzle.py
 A QUIET2 Solving Tool problem formulation.

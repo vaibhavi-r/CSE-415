@@ -1,6 +1,4 @@
-'''
-Name    = Vaibhavi Rangarajan
-UWNetID = vaibhavi
+'''Vaibhavi Rangarajan, UWNetID = vaibhavi
 
 EightPuzzle with Heuristics.py
 A QUIET2 Solving Tool problem formulation.
@@ -204,8 +202,12 @@ def linear_conflict_dist(S):
     '''Idea for custom linear conflict distance was refined
     by using https: // heuristicswiki.wikispaces.com / N + -+Puzzle
 
-    For every linear conflict found where 2 tiles need to cross each other in same line,
+    For every linear conflict found where 2 tiles need to cross each other in same row,
     to get to their end position, add 2 to manhattan distance
+
+    __ 2 1  -> __ 1 2  needs a minimum of 4 moves not 2 as estimated by Manhattan
+
+    This is an admissible heuristic
     '''
 
     if goal_test(S):
@@ -245,9 +247,15 @@ def linear_conflict_dist(S):
                 if ideal_row.index(k) < ideal_row.index(i) and curr_row.index(k) > curr_row.index(i):
                     lc_offset += 2
 
-        #Columns
+        return lc_offset + m_dist
+
+'''     #Columns
+        #Cannot use both Rows, and Columns, because the +2 offset is not reasonable
+        #Will overestimate.
+
         ideal_columns = [[],[],[]]
         curr_columns = [[],[],[]]
+
 
         for idx in range(0,9):
             ideal_columns[idx//3].append(TILES_LIST[idx])
@@ -279,9 +287,8 @@ def linear_conflict_dist(S):
 
                 if ideal_col.index(k) < ideal_col.index(i) and curr_col.index(k) > curr_col.index(i):
                     lc_offset += 2
+'''
 
-
-        return lc_offset + m_dist
 
 
 
@@ -342,7 +349,4 @@ if 'BRYTHON' in globals():
     from TowersOfHanoiVisForBrython import render_state_svg_graphics as render_state
     # if 'TKINTER' in globals(): from TicTacToeVisForTKINTER import set_up_gui
     # </STATE_VIS>
-
-
-
 

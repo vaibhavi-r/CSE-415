@@ -1,7 +1,4 @@
-'''
-Name    = Vaibhavi Rangarajan
-UWNetID = vaibhavi
-'''
+'''Name    = Vaibhavi Rangarajan, UWNetID = vaibhavi'''
 
 # ItrBreadthFS.py, Mar 2017
 # Based on ItrDFS.py, Ver 0.4, Oct, 2017.

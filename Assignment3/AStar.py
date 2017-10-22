@@ -1,6 +1,4 @@
-'''
-Name    = Vaibhavi Rangarajan
-UWNetID = vaibhavi
+'''Name    = Vaibhavi Rangarajan, UWNetID = vaibhavi
 '''
 # Astar.py, April 2017
 # Based on ItrDFS.py, Ver 0.4a, October 14, 2017.
