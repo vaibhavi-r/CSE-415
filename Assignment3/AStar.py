@@ -1,3 +1,7 @@
+'''
+Name    = Vaibhavi Rangarajan
+UWNetID = vaibhavi
+'''
 # Astar.py, April 2017
 # Based on ItrDFS.py, Ver 0.4a, October 14, 2017.
 
@@ -24,7 +28,6 @@ if sys.argv == [''] or len(sys.argv) < 2:
 
 else:
     import importlib
-
     Problem = importlib.import_module(sys.argv[1])
     heuristics = lambda s: Problem.HEURISTICS[sys.argv[2]](s)
 
@@ -33,17 +36,18 @@ print("\nWelcome to AStar")
 COUNT = None
 BACKLINKS = {}
 
-# If state node is not present in G or F score,
-# treat it as Infinity by default
-G_SCORE = {}
-F_SCORE = {}
-H_SCORE = {}
+#Score Dictionaries
+# If state node is not present in G or F score, treat it as Infinity by default
+F_SCORE = {} #Start to Goal (Known + Estimated)
+G_SCORE = {} #Start to Node (Known)
+H_SCORE = {} #Node to Goal (Estimated)
 
 
 # DO NOT CHANGE THIS SECTION
 def runAStar():
-    # initial_state = Problem.CREATE_INITIAL_STATE(keyVal)
     initial_state = Problem.CREATE_INITIAL_STATE()
+
+    #Use an externally specified initial state
     if len(sys.argv)>3:
         initial_state_file = importlib.import_module(sys.argv[3])
         initial_state = initial_state_file.CREATE_INITIAL_STATE()

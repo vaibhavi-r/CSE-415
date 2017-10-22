@@ -1,3 +1,8 @@
+'''
+Name    = Vaibhavi Rangarajan
+UWNetID = vaibhavi
+'''
+
 # ItrBreadthFS.py, Mar 2017
 # Based on ItrDFS.py, Ver 0.4, Oct, 2017.
 
@@ -6,17 +11,17 @@
 # file using the "QUIET" file format.
 # See the TowersOfHanoi.py example file for details.
 # Examples of Usage:
-# python3 ItrBFS.py TowersOfHanoi
+# python3 ItrBFS.py TowerOfHanoi
 # python3 ItrBFS.py EightPuzzle
 
 import sys
 
 if sys.argv == [''] or len(sys.argv) < 2:
-    import BasicEightPuzzle as Problem
-    #import TowerOfHanoi as Problem
+
+    #import BasicEightPuzzle as Problem
+    import TowerOfHanoi as Problem
 else:
     import importlib
-
     Problem = importlib.import_module(sys.argv[1])
 
 print("\nWelcome to ItrBFS")
@@ -28,13 +33,14 @@ BACKLINKS = {}
 def runBFS():
 
     initial_state = Problem.CREATE_INITIAL_STATE()
-    if len(sys.argv)>2:
-        initial_state_file = importlib.import_module(sys.argv[2])
-        initial_state = initial_state_file.CREATE_INITIAL_STATE()
+#    if len(sys.argv)>2:
+#        initial_state_file = importlib.import_module(sys.argv[2])
+#        initial_state = initial_state_file.CREATE_INITIAL_STATE()
 
     print("Initial State:")
     print(initial_state)
     global COUNT, BACKLINKS
+
     COUNT = 0
     BACKLINKS = {}
     path, name = IterativeBFS(initial_state)
@@ -58,7 +64,7 @@ def IterativeBFS(initial_state):
         # the goal test, return path if reached goal
         if Problem.GOAL_TEST(S):
             print("\n" + Problem.GOAL_MESSAGE_FUNCTION(S))
-            backtrace(S)
+            #backtrace(S)
             path = backtrace(S)
             return path, Problem.PROBLEM_NAME
 

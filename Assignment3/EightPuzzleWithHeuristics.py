@@ -1,4 +1,8 @@
-'''EightPuzzle with Heuristics.py
+'''
+Name    = Vaibhavi Rangarajan
+UWNetID = vaibhavi
+
+EightPuzzle with Heuristics.py
 A QUIET2 Solving Tool problem formulation.
 QUIET = Quetzal User Intelligence Enhancing Technology.
 The XML-like tags used here serve to identify key sections of this
@@ -11,7 +15,7 @@ case or camel case.
 '''
 # <METADATA>
 QUIET_VERSION = "0.2"
-PROBLEM_NAME = "Basic Eight Puzzle"
+PROBLEM_NAME = "Eight Puzzle With Heuristics"
 PROBLEM_VERSION = "0.2"
 PROBLEM_AUTHORS = ['Vaibhavi Rangarajan']
 PROBLEM_CREATION_DATE = "17-OCT-2017"
