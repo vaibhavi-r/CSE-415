@@ -26,7 +26,12 @@ BACKLINKS = {}
 
 # DO NOT CHANGE THIS FUNCTION
 def runBFS():
+
     initial_state = Problem.CREATE_INITIAL_STATE()
+    if len(sys.argv)>2:
+        initial_state_file = importlib.import_module(sys.argv[2])
+        initial_state = initial_state_file.CREATE_INITIAL_STATE()
+
     print("Initial State:")
     print(initial_state)
     global COUNT, BACKLINKS
@@ -38,7 +43,6 @@ def runBFS():
 
 
 # DO NOT CHANGE THE NAME OR THE RETURN VALUES
-# TODO: implement the core BFS algorithm
 def IterativeBFS(initial_state):
     global COUNT, BACKLINKS
 
@@ -59,8 +63,6 @@ def IterativeBFS(initial_state):
             return path, Problem.PROBLEM_NAME
 
             # DO NOT CHANGE THE CODE ABOVE
-
-            # TODO: finish BFS implementation
         COUNT += 1
         #if (COUNT % 32)==0:
         #if True:
@@ -82,15 +84,8 @@ def IterativeBFS(initial_state):
 
                         # print(Problem.DESCRIBE_STATE(new_state))
 
-#        for s2 in OPEN:
-#            for i in range(len(L)):
-#                if (s2 == OPEN[i]):
-#                    del L[i];
-#                    break
-
         OPEN = OPEN + L
         #print_state_list("OPEN", OPEN)
-
 
 def print_state_list(name, lst):
     print(name + " is now: ", end='')
@@ -114,12 +109,10 @@ def backtrace(S):
     print("\nPath length = " + str(len(path) - 1))
     return path
 
-
 def occurs_in(s1, lst):
     for s2 in lst:
         if s1 == s2: return True
     return False
-
 
 if __name__ == '__main__':
     path, name = runBFS()
