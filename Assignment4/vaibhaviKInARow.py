@@ -155,11 +155,13 @@ def makeMove(currentState, currentRemark, timeLimit=10000):
     if whoseTurn!=MY_SIDE:
         print("What's happening!")
 
-    h = zhash(currentState)
+    init_alpha = -sys.maxsize
+    init_beta  = sys.maxsize
+    init_depth = 5
+    newState, newVal = minimax(currentState, isMaxPlayer=True, alpha=init_alpha, beta=init_beta, depth=init_depth)
+    print(newState)
 
-
-    newState = currentState
-    newRemark = utter()
+    newRemark = respond(newState,currentRemark)
     return [[move, newState], newRemark]
 
 ##########################################################################
