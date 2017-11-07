@@ -1,4 +1,5 @@
 import random
+from copy import deepcopy
 
 # START VARIABLES
 INITIAL_PLAYER = ''
@@ -57,9 +58,10 @@ def prepare(initial_state, k, what_side_I_play, opponent_nickname):
     OPP_NAME = opponent_nickname
 
     #Zobrist Hashing
-    init_zobrist()
-    INITIAL_BOARD_HASH = zhash(INITIAL_BOARD)
-    print("Board Hash ", INITIAL_BOARD_HASH)
+    #init_zobrist()
+    #INITIAL_BOARD_HASH = zhash(INITIAL_BOARD)
+    #print("Board Hash ", INITIAL_BOARD_HASH)
+
     return "OK"
 
 def parse_initial_board():
@@ -114,6 +116,23 @@ def update_Z_SCORE(h, score, depth=0):
 
 ############################################################
 # MOVE MAKING LOGIC
+
+def successors(state):
+    'possible next states achievable from current state'
+    board = state[0]
+    whoseMove = state[1]
+
+    successorList = []
+    for i in range(M):
+        for j in range(N):
+            if board[i][j] == ' ':
+                nextBoard = deepcopy(board)
+                nextBoard[i][j] = whoseMove
+                nextPlayer = other(whoseMove)
+                successorList.append([nextBoard, nextPlayer])
+    return successorList
+
+
 def makeMove(currentState, currentRemark, timeLimit=10000):
     move = [0,0]
     currentBoard  = currentState[0]
@@ -128,8 +147,17 @@ def makeMove(currentState, currentRemark, timeLimit=10000):
     newState = currentState
     newRemark = utter()
     return [[move, newState], newRemark]
+##########################################################################
+# MINIMAX RELATED LOGIC
 
-############################################################
+def other(current_player):
+    if current_player =='X':
+        return 'O'
+    elif current_player == 'O':
+        return 'X'
+    else: print("Error in switching sides")
+
+
 # MINIMAX
 '''
 def minimax(node, depth, isMaximizingPlayer, alpha, beta):
@@ -162,8 +190,11 @@ def minimax(node, depth, isMaximizingPlayer, alpha, beta):
 
 #Iterative Deepening
 
+
+
+
 ##########################################################################
-# STATE RELATED LOGIC
+# SCORING RELATED LOGIC
 
 STATIC_SCORES={}
 
@@ -176,11 +207,6 @@ def calculate_single_piece_static_evals():
                 piece = PIECE_VAL(INITIAL_BOARD[r][c])  # piece at board[r][c]
                 h = h ^ Z_NUM[r * M + c][piece]
 
-
-def create_board():
-    global INITIAL_BOARD
-    print(INITIAL_BOARD)
-    return []
 
 def staticEval(state):
     board = state[0]
@@ -232,6 +258,7 @@ def flatten(lines):
     flat_lines.append(new_line)
 
     return flat_lines
+
 ##########################################################################
 # CONVERSATIONAL LOGIC
 def utter():

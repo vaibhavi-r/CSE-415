@@ -11,7 +11,9 @@ pepe.py
 destorier.py
 playa.py
 distracto.py
+shindou.py
 
+*.html
 
 # Distribution / packaging
 .Python
@@ -106,3 +108,5 @@ ENV/
 
 # mypy
 .mypy_cache/
+Assignment3/To_Submit/
+Assignment4/pepe.py
