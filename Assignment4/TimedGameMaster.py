@@ -5,8 +5,8 @@ S. Tanimoto, April 29, 2015.
 '''
 
 # Specify details of a match here: 
-import Hobgoblin as player1
-import Player as player2
+import playa as player2
+import distracto as player1
 #from FiveInARowGameType import K, NAME, INITIAL_STATE
 from TicTacToeGameType import K, NAME, INITIAL_STATE
 TIME_PER_MOVE = 0.5
