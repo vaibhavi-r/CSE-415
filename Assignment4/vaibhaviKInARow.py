@@ -60,8 +60,6 @@ def prepare(initial_state, k, what_side_I_play, opponent_nickname):
     init_zobrist()
     INITIAL_BOARD_HASH = zhash(INITIAL_BOARD)
     print("Board Hash ", INITIAL_BOARD_HASH)
-
-
     return "OK"
 
 def parse_initial_board():
