@@ -30,17 +30,12 @@ OPEN_SPOTS = []
 ############################################################
 # INTRODUCTION
 def introduce():
-    intro = 'In an old house in Paris that was covered in vines\n'+\
-            'lived twelve little girls in two straight lines.\n' +\
-            'And I am a one of them, they call me, Madeline\n' +\
-            'Vaibhavi (vaibhavi@uw.edu) is a teacher of mine\n' +\
-            'I learnt K-In-A-Row from her by River Seine\n' +\
-            'Now let us play, thanks to artificial design!\n'
+    intro = 'I am the Evil Twin'
     return intro
 
 def nickname():
     'Who is this child genius who plays K In A Row?'
-    return 'Madeline'
+    return 'Twinnie'
 
 ############################################################
 # PREPARE INITIAL LOGIC
