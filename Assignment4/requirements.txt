@@ -1,0 +1,91 @@
+For this option, you will create a program -- consisting mainly of a collection of specific functions,
+for playing games of "K in a Row". We define a K in a Row game as a kind of generalized Tic-Tac-Toe with the following features:
+
+(a) Just as in Tic-Tac-Toe, there are two players: one plays X and the other plays O;
+
+(b) the board is rectangular, but is not necessarily 3 by 3; it is mRows by nColumns,
+where these numbers are chosen by the Game Master (referee) at the beginning of the game;
+
+(c) a player wins by getting K in a row, where K is not necessarily 3;
+K can be any integer greater than 1 and less than or equal to the maximum of mRows and nColumns;
+
+(d) there can be "forbidden squares" on the board; these are chosen at the beginning of the game by the Game Master;
+a square on the board that is available is represented by a blank, whereas a forbidden square is represented by a dash "-" ;
+
+(e) there can be "handicaps" in the initial state, meaning that some X and/or O tokens can be set up on the board
+by the Game Master in order either to influence the succeeding play or to change the balance of advantage and disadvantage to the players.
+
+
+In addition to being able to play the game, your program should make a comment in each move,
+as if participating in a dialog. Ideally, your program would have a well-defined "personality".
+
+Some examples of possible personalities are these:
+friendly; harmless joker; blunt joker; paranoid; wisecracker; sage; geek;
+wimp; competitive freak; fortune-teller (based on the state of the game).
+The personality will be revealed during games via the "utterances" made by the program.
+(For more details, see the description of the makeMove function below.)
+
+
+Your program must include the following functions.
+You can have helper functions if you like.
+Please keep all the functions required by your player in just one Python file that follows the naming convention mentioned earlier.
+For example, my player would be in a file tanimotoKInARow.py. This will facilitate your player's being part of the class tournament.
+
+
+prepare(initial_state, k, what_side_I_play, opponent_nickname).
+-----------------------------------------------------------------
+This function takes four arguments and it should "remember" these values for the game that is about to be played.
+The first parameter, initial_state, allows your agent to figure out any needed properties of the game board before the playing begins.
+It is a legal game state that can be used by your player, for example, to determine the dimensions of the board, the locations of forbidden squares, and even the locations of any handicap items.
+The second parameter, k, is the number of pieces in a row (or column or diagonal) needed to win the game.
+
+The parameter what_side_I_play is 'X' if your agent will play as X; it is 'O' if your agent will play O.
+
+The parameter opponent_nickname allows your utterance-generation mechanism to refer to the opponent by name, from time to time, if desired.
+
+Note that your program does not really have to do much at all when its prepare method is called. The main thing it should do is return "OK".
+However, the prepare function offers your agent an opportunity to do any initialization of tables or other structures without the "clock running."
+This is good for setting up for, say, Zobrist hashing, if you are using that.
+Another kind of preprocessing would be to make, for each of the four directions in which a win can occur, a list of all the squares on the board where such a winning line could actually start.
+Having these lists can save time in your static evaluation function.
+
+introduce().
+-------------
+This function will return a multiline string that introduces your player, giving its full name (you get to make that up),
+the name and UWNetID of its creator (you), and some words to describe its character.
+
+nickname().
+-------------
+This function should return a short version of the playing agent's name (16 characters or fewer).
+This name will be used to identify the player's moves in game transcripts.
+
+makeMove(currentState, currentRemark, timeLimit=10000).
+----------------------------------------------------
+This is probably your most important function. It should return a list of the form [[move, newState], newRemark].
+The move is a data item describing the chosen move.
+The newState is the result of making the move from the given currentState.
+It must be a complete state and not just a board.
+The currentRemark argument is a string representing a remark from the opponent on its last move.
+The timeLimit represents the number of milliseconds available for computing and returning the move.
+The newRemark to be returned must be a string.
+
+During a game, the strings from your agent and its opponent comprise a dialog.
+Your agent might contribute to this dialog in three ways:
+--by convincingly representing the character that you have chosen or designed for your agent,
+--by showing awareness of the game state and game dynamics (changes in the game state), and
+--by responding in a convincing way to the opponent's remarks.
+
+Extra credit will be based on how well your agent's remarks meet these criteria.
+To get the extra credit, implement (1) and one, the other, or both, of (2) and (3) and then
+describe, in a separate file called ExtraCredit.txt what the features are and how they work.
+
+Something working that adds in a noticeable way to the dialog is worth 5.
+A more thorough implementation that shows consideration for multiple features
+related to one of these two latter criteria is worth up to 10 additional points.
+The maximum extra credit here is therefore 15 points.
+
+staticEval(state).
+--------------------------
+This function will perform a static evaluation of the given state.
+The value returned should be high if the state is good for X and low if the state is good for O.
+A portion (approximately 20 points) of your grade for Part I will depend on how well your staticEval function works.
