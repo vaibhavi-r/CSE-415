@@ -9,7 +9,7 @@ INITIAL_BOARD = []
 INITIAL_BOARD_HASH =''
 
 # PLAYER VARIABLES
-MY_NAME = 'Madeline'
+MY_NAME = ''
 MY_SIDE = ''
 OPP_NAME = ''
 OPP_SIDE = ''
@@ -27,6 +27,7 @@ NUM_X = 0
 NUM_O = 0
 
 OPEN_SPOTS = []
+
 ############################################################
 # INTRODUCTION
 def introduce():
@@ -45,6 +46,10 @@ def nickname():
 ############################################################
 # PREPARE INITIAL LOGIC
 def prepare(initial_state, k, what_side_I_play, opponent_nickname):
+    global M,N,K
+    global INITIAL_BOARD, INITIAL_PLAYER
+    global MY_SIDE, MY_NAME, OPP_SIDE, OPP_NAME
+
     print("PREPARING")
     INITIAL_BOARD = initial_state[0]
     INITIAL_PLAYER = initial_state[1]
@@ -58,11 +63,14 @@ def prepare(initial_state, k, what_side_I_play, opponent_nickname):
     else: OPP_SIDE = 'X'
 
     OPP_NAME = opponent_nickname
+    MY_NAME = nickname()
 
     #Zobrist Hashing
     #init_zobrist()
     #INITIAL_BOARD_HASH = zhash(INITIAL_BOARD)
     #print("Board Hash ", INITIAL_BOARD_HASH)
+
+    parse_initial_board()
 
     return "OK"
 
@@ -87,24 +95,28 @@ def parse_initial_board():
 ############################################################
 # ZOBRIST HASHING
 
-PIECE_VAL = {'O':0, 'X':1, '-':2 , '':3}
+PIECE_VAL = {'O':1, 'X':2}#, '-':3 , ' ':4}
 Z_NUM =[]  #2d array of size (MxN) by 4 (positions x pieces)
 Z_SCORES ={} #State Evals stored with iteration depth
 
 def init_zobrist():
-# fill Z table with random numbers/bitstrings
+    global M, N
+    global Z_NUM
+    # fill Z table with random numbers/bitstrings
+
     print("Initializing Zobrist Table for Board Size:",M,'by',N)
     for tile in range(M*N):  # loop over the board as a linear array
-        Z_NUM[tile] = []
-        for piece in range(4):  # loop over the pieces
+        Z_NUM.append([[],[],[],[]])
+        for piece in range(2):  # loop over the pieces
             Z_NUM[tile][piece] = random.getrandbits(10)
 
 def zhash(board):
     h=0
     for r in range(M):
         for c in range(N):
-            if board[r][c] != '':
-                piece = PIECE_VAL(board[r][c]) #piece at board[r][c]
+            if board[r][c] != ' ' and board[r][c] != '-':
+                print("Found piece:", board[r][c])
+                piece = PIECE_VAL[board[r][c]] #piece at board[r][c]
                 h = h^Z_NUM[r*M+c][piece]
     return h
 
@@ -149,6 +161,7 @@ def makeMove(currentState, currentRemark, timeLimit=10000):
     newState = currentState
     newRemark = utter()
     return [[move, newState], newRemark]
+
 ##########################################################################
 # MINIMAX RELATED LOGIC
 
@@ -163,11 +176,12 @@ def other(current_player):
 # MINIMAX with Alpha Beta Pruning
 def minimax(state, isMaxPlayer, alpha, beta, depth=0):
     if depth ==0 : #Time ran out
-        return staticEval(state)
+        return state, staticEval(state)
 
     nextStates= successors(state)
     if nextStates ==[]:
-        return staticEval(state)
+        return state, staticEval(state)
+
 
     if isMaxPlayer == True:
         bestVal =  -sys.maxsize
@@ -177,7 +191,7 @@ def minimax(state, isMaxPlayer, alpha, beta, depth=0):
             alpha = max(alpha, bestVal)
             if beta <= alpha: #Found a solution
                 break
-        return bestVal
+        return child, bestVal
 
     else:
         bestVal = -sys.maxsize
@@ -187,14 +201,15 @@ def minimax(state, isMaxPlayer, alpha, beta, depth=0):
             beta = min(beta, bestVal)
             if beta <= alpha: #Found a solution
                 break
-        return bestVal
+        return child, bestVal
+
+
 
 
 ##########################################################################
 # SCORING RELATED LOGIC
 
 STATIC_SCORES={}
-
 
 def calculate_single_piece_static_evals():
     for r in range(M):
@@ -247,12 +262,14 @@ def staticEval(state):
                 score += 10^k * line.count('X'*k)
                 score -= 10^k * line.count('O'*k)
 
+    #FACTORS to consider
+    #number of 1,2,... K-1 in line
     #continuous 1,2,... K-1 in line
-    #threats
+    #threats !
     #length of line itself
-    #Maximum needed for win K
-
+    # Needed K  for win
     # Number of available spots in row
+    #number of overall available spots
     # Whoever is playing gets a basic advantage for same board orientation
     if MY_SIDE ==whoseTurn:
         score += 100
@@ -263,7 +280,7 @@ def flatten(lines):
     'Reduce a list of lines to single strings for each row/column/diagonal'
     flat_lines = []
     for line in lines:
-        new_line = ''.join(piece if piece != '' else '*' for piece in line)
+        new_line = ''.join(piece for piece in line)
     flat_lines.append(new_line)
     return flat_lines
 

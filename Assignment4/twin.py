@@ -9,7 +9,7 @@ INITIAL_BOARD = []
 INITIAL_BOARD_HASH =''
 
 # PLAYER VARIABLES
-MY_NAME = 'Madeline'
+MY_NAME = 'Twinnie'
 MY_SIDE = ''
 OPP_NAME = ''
 OPP_SIDE = ''
@@ -35,7 +35,8 @@ def introduce():
 
 def nickname():
     'Who is this child genius who plays K In A Row?'
-    return 'Twinnie'
+    MY_NAME = "Twinnie"
+    return  MY_NAME
 
 ############################################################
 # PREPARE INITIAL LOGIC
