@@ -20,8 +20,6 @@ PROBLEM_DESC = \
     Python 3 constructs and has been tested with Python 3.6.
     It is designed to work according to the QUIET2 tools interface.
     '''
-
-
 # </METADATA>
 
 # <COMMON_CODE>
@@ -136,8 +134,4 @@ GOAL_MESSAGE_FUNCTION = lambda s: goal_message(s)
 # </GOAL_MESSAGE_FUNCTION>
 
 # <STATE_VIS>
-if 'BRYTHON' in globals():
-    from TowersOfHanoiVisForBrython import set_up_gui as set_up_user_interface
-    from TowersOfHanoiVisForBrython import render_state_svg_graphics as render_state
-    # if 'TKINTER' in globals(): from TicTacToeVisForTKINTER import set_up_gui
-    # </STATE_VIS>
+# </STATE_VIS>
