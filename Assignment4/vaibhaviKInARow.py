@@ -42,6 +42,7 @@ def nickname():
 ############################################################
 # PREPARE INITIAL LOGIC
 def prepare(initial_state, k, what_side_I_play, opponent_nickname):
+    print("PREPARING")
     INITIAL_BOARD = initial_state[0]
     INITIAL_PLAYER = initial_state[1]
 
@@ -57,8 +58,9 @@ def prepare(initial_state, k, what_side_I_play, opponent_nickname):
 
     #Zobrist Hashing
     init_zobrist()
-    INITIAL_BOARD_HASH = hash(INITIAL_BOARD)
+    INITIAL_BOARD_HASH = zhash(INITIAL_BOARD)
     print("Board Hash ", INITIAL_BOARD_HASH)
+
 
     return "OK"
 

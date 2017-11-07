@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec0cf1e8-4e59-4b28-ba52-96f032f06a36" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Assignment4/Madeline-vs-Madeline-in-Five-in-a-Row-on-Seven-by-Seven-Board-with-Corners-Forbidden-round-1.html" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ai-disease-modelling" afterPath="$PROJECT_DIR$/ai-disease-modelling" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assignment4/TimedGameMaster.py" afterPath="$PROJECT_DIR$/Assignment4/TimedGameMaster.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py" afterPath="$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py" />
@@ -50,8 +49,8 @@
       <file leaf-file-name="vaibhaviKInARow.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="177" column="16" selection-start-line="177" selection-start-column="16" selection-end-line="177" selection-end-column="16" />
+            <state relative-caret-position="165">
+              <caret line="60" column="26" selection-start-line="60" selection-start-column="26" selection-end-line="60" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -84,8 +83,8 @@
       <file leaf-file-name="TimedGameMaster.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Assignment4/TimedGameMaster.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="8" column="16" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+            <state relative-caret-position="90">
+              <caret line="7" column="33" selection-start-line="7" selection-start-column="33" selection-end-line="7" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -881,14 +880,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Assignment4/TimedGameMaster.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="8" column="16" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Library/Caches/PyCharm2016.2/python_stubs/-751035933/builtins.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2760">
@@ -917,10 +908,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Assignment4/TimedGameMaster.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="7" column="33" selection-start-line="7" selection-start-column="33" selection-end-line="7" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="177" column="16" selection-start-line="177" selection-start-column="16" selection-end-line="177" selection-end-column="16" />
+        <state relative-caret-position="165">
+          <caret line="60" column="26" selection-start-line="60" selection-start-column="26" selection-end-line="60" selection-end-column="26" />
           <folding />
         </state>
       </provider>
