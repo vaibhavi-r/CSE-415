@@ -53,6 +53,10 @@ player.prepare(INITIAL_STATE, 3, what_side_I_play ='X', opponent_nickname = 'Seg
 #print(z1)
 #print(z2)
 #print(z1^z0)
-print(player.staticEval(INITIAL_STATE))
+#print(player.staticEval(INITIAL_STATE))
+
+initial_board = INITIAL_STATE[0]
+print(player.flatten(initial_board))
+
 
 

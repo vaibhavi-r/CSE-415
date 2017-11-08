@@ -32,7 +32,7 @@ OPEN_SPOTS = []
 ############################################################
 # INTRODUCTION
 def introduce():
-    intro = 'In an old house in Paris that was covered in vines\n'+\
+    intro = '\nIn an old house in Paris that was covered in vines\n'+\
             'lived twelve little girls in two straight lines.\n' +\
             'And I am a one of them, they call me, Madeline\n' +\
             'Vaibhavi (vaibhavi@uw.edu) is a teacher of mine\n' +\
@@ -150,7 +150,7 @@ def successors(state):
                 nextPlayer = other(currentPlayer)
                 successorList.append([nextBoard, nextPlayer])
     #Possibly order by static val?
-    print("Successors = ", len(successorList))
+    #print("Successors = ", len(successorList))
     return successorList
 
 def makeMove(currentState, currentRemark, timeLimit=10000):
@@ -167,14 +167,15 @@ def makeMove(currentState, currentRemark, timeLimit=10000):
 
     init_alpha = -sys.maxsize
     init_beta  = sys.maxsize
-    init_depth = 1
+    init_depth = 3
 
-    #newState = minimax(currentState, isMaxPlayer=True, startTime=now, alpha=init_alpha, beta=init_beta, depth=init_depth)
-    [newVal, newState] = minimax2(currentState, TIME_LIMIT, now , init_depth)
+    newState = minimax(currentState, isMaxPlayer=True, startTime=now, alpha=init_alpha, beta=init_beta, depth=init_depth)
+    #[newVal, newState] = minimax2(currentState, TIME_LIMIT, now , init_depth)
 
     #print("Found New Board ", newState[0])
 
     move = getMove(currentState, newState)
+    print("MOVE", move)
     OPEN_SPOTS.remove(move)
     NUM_AVAILABLE_SPOTS -= 1
 
@@ -193,9 +194,7 @@ def getMove(state, newState):
         if board[i][j] !=newBoard[i][j]:
             return [i,j]
 
-        #changes = [(i, e1, e2) for i, (e1, e2) in enumerate(zip(list1, list2)) if e1 != e2]
-        #NUM_AVAILABLE_SPOTS -=1
-        #move_i = [i for i in list1 + list2 if (a not in list1) or (a not in list2)]
+    return None
 
 ##########################################################################
 # MINIMAX RELATED LOGIC
@@ -207,38 +206,35 @@ def other(current_player):
         return 'X'
     else: print("Error in switching sides")
 
-
-def minimax2(state, timeLimit, timeStart, playLeft):
+'''
+def minimax2(state, timeLimit, timeStart, ply):
     global MY_SIDE
 
-    print(time.time()-timeStart)
-    print("Time Limit", timeLimit)
-    if time.time() - timeStart >= timeLimit * 0.7:
+    #print("Remaining Time", time.time()-timeStart)
+    #print("Time Limit", timeLimit)
+    if timeLimit - (time.time() - timeStart) >= 0.15:
         return [staticEval(state), state]
     nextState = []
-    whichSide = state[1]
+    whoseMove = state[1]
     if (playLeft == 0): return [staticEval(state), state]
-    if whichSide == MY_SIDE: provisional = -900000000
+    if whoseMove == MY_SIDE: provisional = -900000000
     else: provisional = 900000000
-    for everyState in successors(state):
-        everyResult = minimax2(everyState, timeLimit, timeStart, playLeft - 1)
+    for child in successors(state):
+        everyResult = minimax2(child, timeLimit, timeStart, ply - 1)
         newVal = everyResult[0]
-        if (whichSide == MY_SIDE and newVal > provisional) or (whichSide == other(MY_SIDE) and newVal < provisional):
+        if (whoseMove == MY_SIDE and newVal > provisional) or (whoseMove == other(MY_SIDE) and newVal < provisional):
             provisional = newVal
             nextState = everyState
     return [provisional, nextState]
-
-
 '''
+
 # MINIMAX with Alpha Beta Pruning
 def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
-    print("MINIMAX")
-
 #    if depth<=0: #Time ran out
 #        print("No more depth")
 #        return state
 
-    if (time.time() - startTime) >  0.8*TIME_LIMIT:
+    if TIME_LIMIT - (time.time() - startTime) <  0.15:
         print("Timeout")
         return state
 
@@ -248,7 +244,6 @@ def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
 
 
     if isMaxPlayer == True:
-        print("MAXPLAYER")
         bestVal =  -sys.maxsize
         for child in nextStates:
             new_state = minimax(child, False, startTime, alpha, beta,  depth+1)
@@ -259,7 +254,6 @@ def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
         return child
 
     else:
-        print("MINPLAYER")
         bestVal = -sys.maxsize
         for child in nextStates:
             new_state = minimax(child,True, startTime, alpha, beta, depth+1)
@@ -268,7 +262,6 @@ def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
             if beta <= alpha: #Found a solution
                 break
         return child
-'''
 
 ##########################################################################
 # SCORING RELATED LOGIC
@@ -286,23 +279,21 @@ def calculate_single_piece_static_evals():
 
 def staticEval(state):
     global M, N
-    print("\tEVAL", M, N)
-
     board = state[0]
     whoseTurn = state[1]
 
     rows = []
     cols = []
-    diags1 = []
-    diags2 = []
+    #diags1 = []
+    #diags2 = []
 
     for j in range(N):
         cols.append([])
 
     #Find number of rows with K in a row
-    for i in range(M):
+    for i in range(0,M):
         rows.append(board[i])
-        for j in range(N):
+        for j in range(0,N):
             piece = board[i][j]
             cols[j].append(piece)
             #diags1[M-1+i].append(piece)
@@ -316,46 +307,50 @@ def staticEval(state):
 
     all_lines.extend(flat_rows)
     all_lines.extend(flat_cols)
-    print(all_lines)
+    #print("ALL LINES ",all_lines)
 
  #   all_lines.extend(flat_diags1)
 #    all_lines.extend(flat_diags2)
 
-    print("\t SCORING")
     score = 0
     # more than 1, 2,.. K-1 in line
     for line in all_lines:
+        l = len(line)
+        score += 5* line.count('X')
+        score -= 5* line.count('O')
+
         for k in range(1, K):
             #number in a line
-            score += 5^k * line.count('X')
-            score -= 5^k * line.count('O')
-
             #continuous occurrences in a line, needs more than 2
             if k > 1:
                 score += 10^k * line.count('X'*k)
                 score -= 10^k * line.count('O'*k)
 
-    #FACTORS to consider
-    #number of 1,2,... K-1 in line
-    #continuous 1,2,... K-1 in line
-    #threats !
-    #length of line itself
-    # Needed K  for win
-    # Number of available spots in row
-    #number of overall available spots
-    # Whoever is playing gets a basic advantage for same board orientation
     if MY_SIDE ==whoseTurn:
-        score += 100
+        score += 1000000
 
     return score
+
 
 def flatten(lines):
     'Reduce a list of lines to single strings for each row/column/diagonal'
     flat_lines = []
     for line in lines:
         new_line = ''.join(piece for piece in line)
-    flat_lines.append(new_line)
+        flat_lines.append(new_line)
     return flat_lines
+
+
+# FACTORS to consider
+# number of 1,2,... K-1 in line
+# continuous 1,2,... K-1 in line
+# threats !
+# length of line itself
+# Needed K  for win
+# Number of available spots in row
+# number of overall available spots
+# Whoever is playing gets a basic advantage for same board orientation
+
 
 ##########################################################################
 # CONVERSATIONAL LOGIC

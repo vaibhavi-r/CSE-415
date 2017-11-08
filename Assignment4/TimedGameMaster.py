@@ -5,8 +5,8 @@ S. Tanimoto, April 29, 2015.
 '''
 
 # Specify details of a match here: 
-import vaibhaviKInARow as player1
-import kermit as player2
+import vaibhaviKInARow as player2
+import destorier as player1
 #from FiveInARowGameType import K, NAME, INITIAL_STATE
 from TicTacToeGameType import K, NAME, INITIAL_STATE
 TIME_PER_MOVE = 5
