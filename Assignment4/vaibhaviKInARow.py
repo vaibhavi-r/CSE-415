@@ -206,27 +206,6 @@ def other(current_player):
         return 'X'
     else: print("Error in switching sides")
 
-'''
-def minimax2(state, timeLimit, timeStart, ply):
-    global MY_SIDE
-
-    #print("Remaining Time", time.time()-timeStart)
-    #print("Time Limit", timeLimit)
-    if timeLimit - (time.time() - timeStart) >= 0.15:
-        return [staticEval(state), state]
-    nextState = []
-    whoseMove = state[1]
-    if (playLeft == 0): return [staticEval(state), state]
-    if whoseMove == MY_SIDE: provisional = -900000000
-    else: provisional = 900000000
-    for child in successors(state):
-        everyResult = minimax2(child, timeLimit, timeStart, ply - 1)
-        newVal = everyResult[0]
-        if (whoseMove == MY_SIDE and newVal > provisional) or (whoseMove == other(MY_SIDE) and newVal < provisional):
-            provisional = newVal
-            nextState = everyState
-    return [provisional, nextState]
-'''
 
 # MINIMAX with Alpha Beta Pruning
 def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
@@ -235,7 +214,7 @@ def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
 #        return state
 
     if TIME_LIMIT - (time.time() - startTime) <  0.15:
-        print("Timeout")
+        #print("Timeout")
         return state
 
     nextStates= successors(state)
@@ -268,14 +247,22 @@ def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
 
 STATIC_SCORES={}
 
-def calculate_single_piece_static_evals():
-    for r in range(M):
-        for c in range(N):
-            for piece in range(3):
-                h = Z_NUM[r][c]
-                piece = PIECE_VAL(INITIAL_BOARD[r][c])  # piece at board[r][c]
-                h = h ^ Z_NUM[r * M + c][piece]
-
+#def calculate_single_piece_static_evals():
+#    for r in range(M):
+#        for c in range(N):
+#            for piece in range(3):
+#                h = Z_NUM[r][c]
+#                piece = PIECE_VAL(INITIAL_BOARD[r][c])  # piece at board[r][c]
+#                h = h ^ Z_NUM[r * M + c][piece]
+def diagonals(mat):
+    global M, N
+    def diag(sx, sy):
+        for x, y in zip(range(sx, M), range(sy, N)):
+            yield mat[x][y]
+    for sx in range(M):
+        yield list(diag(sx, 0))
+    for sy in range(1, N):
+        yield list(diag(0, sy))
 
 def staticEval(state):
     global M, N
@@ -284,8 +271,7 @@ def staticEval(state):
 
     rows = []
     cols = []
-    #diags1 = []
-    #diags2 = []
+    diags = list(diagonals(board))
 
     for j in range(N):
         cols.append([])
@@ -296,39 +282,45 @@ def staticEval(state):
         for j in range(0,N):
             piece = board[i][j]
             cols[j].append(piece)
-            #diags1[M-1+i].append(piece)
+
 
     all_lines = []
 
     flat_rows = flatten(rows)
     flat_cols = flatten(cols)
- #   flat_diags1 = flatten(diags1)
- #   flat_diags2 = flatten(diags2)
+    flat_diags = flatten(diags)
 
     all_lines.extend(flat_rows)
     all_lines.extend(flat_cols)
+    all_lines.extend(flat_diags)
+
     #print("ALL LINES ",all_lines)
 
- #   all_lines.extend(flat_diags1)
-#    all_lines.extend(flat_diags2)
-
     score = 0
+    threats =  0
+
     # more than 1, 2,.. K-1 in line
     for line in all_lines:
         l = len(line)
-        score += 5* line.count('X')
-        score -= 5* line.count('O')
+        line_MY = line.count(MY_SIDE)
+        line_OPP = 5* line.count(OPP_SIDE)
+
+#        threats =
 
         for k in range(1, K):
             #number in a line
             #continuous occurrences in a line, needs more than 2
             if k > 1:
-                score += 10^k * line.count('X'*k)
-                score -= 10^k * line.count('O'*k)
+                score += 10^k * line.count(MY_SIDE*k)
+                score -= 10^k * line.count(OPP_SIDE*k)
 
-    if MY_SIDE ==whoseTurn:
-        score += 1000000
+        score +=  5*line_MY - 5*line_OPP
 
+    #ensure if threat exists, it is noticed
+    if OPP_SIDE == whoseTurn:
+        score -= 10^k
+
+    #threat_level = K-curr
     return score
 
 
