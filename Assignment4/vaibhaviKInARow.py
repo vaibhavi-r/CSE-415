@@ -8,6 +8,7 @@ INITIAL_PLAYER = ''
 INITIAL_BOARD = []
 INITIAL_BOARD_HASH =''
 
+
 # PLAYER VARIABLES
 MY_NAME = ''
 MY_SIDE = ''
@@ -28,6 +29,7 @@ NUM_X = 0
 NUM_O = 0
 
 OPEN_SPOTS = []
+
 
 ############################################################
 # INTRODUCTION
@@ -67,8 +69,10 @@ def prepare(initial_state, k, what_side_I_play, opponent_nickname):
     OPP_NAME = opponent_nickname
     MY_NAME = nickname()
 
+
     #Zobrist Hashing
-    #init_zobrist()
+    init_zobrist()
+
     #INITIAL_BOARD_HASH = zhash(INITIAL_BOARD)
     #print("Board Hash ", INITIAL_BOARD_HASH)
 
@@ -102,53 +106,60 @@ def parse_initial_board():
 ############################################################
 # ZOBRIST HASHING
 
-PIECE_VAL = {'O':1, 'X':2}#, '-':3 , ' ':4}
-Z_NUM =[]  #2d array of size (MxN) by 4 (positions x pieces)
-Z_SCORES ={} #State Evals stored with iteration depth
+PIECE_VAL = {'O':1, 'X':2} #, '-':3 , ' ':4}
+Z_NUM =[]  #2d array of size (MxN) by 2 (positions x pieces)
+Z_SCORES ={} #Static State Evals stored without iteration depth
 
 def init_zobrist():
     global M, N
     global Z_NUM
-    # fill Z table with random numbers/bitstrings
+    global Z_SCORES
 
+    Z_SCORES = {}
+
+    # fill Z table with random numbers/bitstrings
     print("Initializing Zobrist Table for Board Size:",M,'by',N)
     for tile in range(M*N):  # loop over the board as a linear array
-        Z_NUM.append([[],[],[],[]])
+        Z_NUM.append([[],[]])
         for piece in range(2):  # loop over the pieces
-            Z_NUM[tile][piece] = random.getrandbits(10)
-
+            Z_NUM[tile][piece] = random.getrandbits(32)
 
 def zhash(board):
+    global Z_NUM, M, N
     h=0
+    print('zhash--')
     for r in range(M):
         for c in range(N):
             if board[r][c] != ' ' and board[r][c] != '-':
                 print("Found piece:", board[r][c])
                 piece = PIECE_VAL[board[r][c]] #piece at board[r][c]
                 h = h^Z_NUM[r*M+c][piece]
-    return h
-
-def update_Z_SCORE(h, score, depth=0):
-    if h not in Z_SCORES:
-        Z_SCORES[h] = [score,0]
-    else:
-        Z_SCORES[h] = [score,depth]
+    return str(h)
 
 ############################################################
 # MOVE MAKING LOGIC
 
 def successors(state):
+    global M, N, NUM_AVAILABLE_SPOTS, OPEN_SPOTS
     'possible next states achievable from current state'
     board = state[0]
     currentPlayer = state[1]
     successorList = []
-    for i in range(M):
-        for j in range(N):
-            if board[i][j] == ' ':
-                nextBoard = deepcopy(board)
-                nextBoard[i][j] = currentPlayer
-                nextPlayer = other(currentPlayer)
-                successorList.append([nextBoard, nextPlayer])
+
+    for spot in OPEN_SPOTS:
+        [i,j] = spot
+        if board[i][j] == ' ':
+            nextBoard = deepcopy(board)
+            nextBoard[i][j] = currentPlayer
+            nextPlayer = other(currentPlayer)
+            successorList.append([nextBoard, nextPlayer])
+        else:
+            OPEN_SPOTS.remove(spot)
+            NUM_AVAILABLE_SPOTS -=1
+
+        #    for i in range(M):
+#        for j in range(N):
+
     #Possibly order by static val?
     #print("Successors = ", len(successorList))
     return successorList
@@ -167,21 +178,20 @@ def makeMove(currentState, currentRemark, timeLimit=10000):
 
     init_alpha = -sys.maxsize
     init_beta  = sys.maxsize
-    init_depth = 3
+    init_depth = 2
 
     newState = minimax(currentState, isMaxPlayer=True, startTime=now, alpha=init_alpha, beta=init_beta, depth=init_depth)
-    #[newVal, newState] = minimax2(currentState, TIME_LIMIT, now , init_depth)
-
-    #print("Found New Board ", newState[0])
 
     move = getMove(currentState, newState)
     print("MOVE", move)
+
     OPEN_SPOTS.remove(move)
     NUM_AVAILABLE_SPOTS -= 1
 
     newRemark = respond(newState,currentRemark)
 
     return [[move, newState], newRemark]
+
 
 def getMove(state, newState):
     board = state[0]
@@ -226,7 +236,7 @@ def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
         bestVal =  -sys.maxsize
         for child in nextStates:
             new_state = minimax(child, False, startTime, alpha, beta,  depth+1)
-            bestVal = max(bestVal, staticEval(new_state))
+            bestVal = max(bestVal, get_static_score(new_state))
             alpha = max(alpha, bestVal)
             if beta <= alpha: #Found a solution
                 break
@@ -236,7 +246,7 @@ def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
         bestVal = -sys.maxsize
         for child in nextStates:
             new_state = minimax(child,True, startTime, alpha, beta, depth+1)
-            bestVal = min(bestVal, staticEval(new_state))
+            bestVal = min(bestVal, get_static_score(new_state))
             beta = min(beta, bestVal)
             if beta <= alpha: #Found a solution
                 break
@@ -254,6 +264,7 @@ STATIC_SCORES={}
 #                h = Z_NUM[r][c]
 #                piece = PIECE_VAL(INITIAL_BOARD[r][c])  # piece at board[r][c]
 #                h = h ^ Z_NUM[r * M + c][piece]
+
 def diagonals(mat):
     global M, N
     def diag(sx, sy):
@@ -263,6 +274,19 @@ def diagonals(mat):
         yield list(diag(sx, 0))
     for sy in range(1, N):
         yield list(diag(0, sy))
+
+def get_static_score(state):
+    'Calls static eval function for newly seen board, else returns precomputed value'
+    global Z_SCORES
+    zcode = zhash(state[0])
+    if zcode in Z_SCORES: #pre-computed value
+        return Z_SCORES[zcode]
+
+    else: #new board config
+        score = staticEval(state)
+        Z_SCORES[zcode] = score
+        return score
+
 
 def staticEval(state):
     global M, N
@@ -286,15 +310,19 @@ def staticEval(state):
 
     all_lines = []
 
-    flat_rows = flatten(rows)
-    flat_cols = flatten(cols)
-    flat_diags = flatten(diags)
+    if N>=K:
+        flat_rows = flatten(rows)
+        all_lines.extend(flat_rows)
 
-    all_lines.extend(flat_rows)
-    all_lines.extend(flat_cols)
+    if M >=K:
+        flat_cols = flatten(cols)
+        all_lines.extend(flat_cols)
+
+    flat_diags = flatten(diags)
+    flat_diags = [d for d in flat_diags if len(d) >=K]
+
     all_lines.extend(flat_diags)
 
-    #print("ALL LINES ",all_lines)
 
     score = 0
     threats =  0
@@ -302,19 +330,21 @@ def staticEval(state):
     # more than 1, 2,.. K-1 in line
     for line in all_lines:
         l = len(line)
-        line_MY = line.count(MY_SIDE)
-        line_OPP = 5* line.count(OPP_SIDE)
+        mine =  line.count(MY_SIDE)
+        yours = line.count(OPP_SIDE)
+        forbidden = line.count('_')
+        open = line.count('.')
 
 #        threats =
-
         for k in range(1, K):
             #number in a line
             #continuous occurrences in a line, needs more than 2
+
             if k > 1:
                 score += 10^k * line.count(MY_SIDE*k)
                 score -= 10^k * line.count(OPP_SIDE*k)
 
-        score +=  5*line_MY - 5*line_OPP
+        score = score + (5*mine) - (5*yours)
 
     #ensure if threat exists, it is noticed
     if OPP_SIDE == whoseTurn:
@@ -328,7 +358,7 @@ def flatten(lines):
     'Reduce a list of lines to single strings for each row/column/diagonal'
     flat_lines = []
     for line in lines:
-        new_line = ''.join(piece for piece in line)
+        new_line = ''.join(piece if piece!=' ' else '.' for piece in line)
         flat_lines.append(new_line)
     return flat_lines
 
@@ -346,8 +376,6 @@ def flatten(lines):
 
 ##########################################################################
 # CONVERSATIONAL LOGIC
-def utter():
-    return "Aha"
 
 """
 lose, win, game, play, player, loser, winner, tough, easy, puzzle, move, go, stop, start, finish, close
@@ -355,6 +383,11 @@ saved game, blocked you
 """
 
 def respond(currentState, currentRemark):
-    return "Aha"
+    score = get_static_score(currentState[0])
 
+
+
+    return "Aha"
 ##########################################################################
+# Add zhash
+# Find threats and stop them
