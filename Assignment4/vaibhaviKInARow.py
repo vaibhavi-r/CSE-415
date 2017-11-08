@@ -18,6 +18,7 @@ OPP_SIDE = ''
 M = 0
 N = 0
 K = 0
+TIME_LIMIT =0
 
 # STATE EVAL VARIABLES
 NUM_AVAILABLE_SPOTS = 0
@@ -59,6 +60,7 @@ def prepare(initial_state, k, what_side_I_play, opponent_nickname):
     K = k
 
     MY_SIDE = what_side_I_play
+    print('My side', MY_SIDE)
     if what_side_I_play == 'X': OPP_SIDE='O'
     else: OPP_SIDE = 'X'
 
@@ -77,12 +79,14 @@ def prepare(initial_state, k, what_side_I_play, opponent_nickname):
 def parse_initial_board():
     global NUM_O, NUM_X, NUM_FORBIDDEN_SPOTS, NUM_FILLED_SPOTS, NUM_AVAILABLE_SPOTS
     global M,N
+    global OPEN_SPOTS
 
     for i in range(M):
         for j in range(N):
             tile = INITIAL_BOARD[i][j]
-            if tile == '':
+            if tile == ' ':
                 NUM_AVAILABLE_SPOTS += 1
+                OPEN_SPOTS.append([i,j])
             elif tile == 'X':
                 NUM_X +=1
                 NUM_FILLED_SPOTS +=1
@@ -91,6 +95,9 @@ def parse_initial_board():
                 NUM_FILLED_SPOTS +=1
             else:
                 NUM_FORBIDDEN_SPOTS += 1
+
+    print("OPEN SPOTS", OPEN_SPOTS)
+
 
 ############################################################
 # ZOBRIST HASHING
@@ -110,6 +117,7 @@ def init_zobrist():
         for piece in range(2):  # loop over the pieces
             Z_NUM[tile][piece] = random.getrandbits(10)
 
+
 def zhash(board):
     h=0
     for r in range(M):
@@ -119,7 +127,6 @@ def zhash(board):
                 piece = PIECE_VAL[board[r][c]] #piece at board[r][c]
                 h = h^Z_NUM[r*M+c][piece]
     return h
-
 
 def update_Z_SCORE(h, score, depth=0):
     if h not in Z_SCORES:
@@ -134,7 +141,6 @@ def successors(state):
     'possible next states achievable from current state'
     board = state[0]
     currentPlayer = state[1]
-
     successorList = []
     for i in range(M):
         for j in range(N):
@@ -144,11 +150,15 @@ def successors(state):
                 nextPlayer = other(currentPlayer)
                 successorList.append([nextBoard, nextPlayer])
     #Possibly order by static val?
+    print("Successors = ", len(successorList))
     return successorList
 
-
 def makeMove(currentState, currentRemark, timeLimit=10000):
-    move = [0,0]
+    global OPEN_SPOTS, MY_SIDE, TIME_LIMIT, NUM_AVAILABLE_SPOTS
+    now = time.time()
+    TIME_LIMIT = timeLimit
+
+
     currentBoard  = currentState[0]
     whoseTurn = currentState[1]
 
@@ -157,12 +167,35 @@ def makeMove(currentState, currentRemark, timeLimit=10000):
 
     init_alpha = -sys.maxsize
     init_beta  = sys.maxsize
-    init_depth = 5
-    newState, newVal = minimax(currentState, isMaxPlayer=True, alpha=init_alpha, beta=init_beta, depth=init_depth)
-    print(newState)
+    init_depth = 1
+
+    #newState = minimax(currentState, isMaxPlayer=True, startTime=now, alpha=init_alpha, beta=init_beta, depth=init_depth)
+    [newVal, newState] = minimax2(currentState, TIME_LIMIT, now , init_depth)
+
+    #print("Found New Board ", newState[0])
+
+    move = getMove(currentState, newState)
+    OPEN_SPOTS.remove(move)
+    NUM_AVAILABLE_SPOTS -= 1
 
     newRemark = respond(newState,currentRemark)
+
     return [[move, newState], newRemark]
+
+def getMove(state, newState):
+    board = state[0]
+    newBoard = newState[0]
+
+    #expect only one row will change
+    for spot in OPEN_SPOTS:
+        i = spot[0]
+        j = spot[1]
+        if board[i][j] !=newBoard[i][j]:
+            return [i,j]
+
+        #changes = [(i, e1, e2) for i, (e1, e2) in enumerate(zip(list1, list2)) if e1 != e2]
+        #NUM_AVAILABLE_SPOTS -=1
+        #move_i = [i for i in list1 + list2 if (a not in list1) or (a not in list2)]
 
 ##########################################################################
 # MINIMAX RELATED LOGIC
@@ -175,38 +208,67 @@ def other(current_player):
     else: print("Error in switching sides")
 
 
+def minimax2(state, timeLimit, timeStart, playLeft):
+    global MY_SIDE
+
+    print(time.time()-timeStart)
+    print("Time Limit", timeLimit)
+    if time.time() - timeStart >= timeLimit * 0.7:
+        return [staticEval(state), state]
+    nextState = []
+    whichSide = state[1]
+    if (playLeft == 0): return [staticEval(state), state]
+    if whichSide == MY_SIDE: provisional = -900000000
+    else: provisional = 900000000
+    for everyState in successors(state):
+        everyResult = minimax2(everyState, timeLimit, timeStart, playLeft - 1)
+        newVal = everyResult[0]
+        if (whichSide == MY_SIDE and newVal > provisional) or (whichSide == other(MY_SIDE) and newVal < provisional):
+            provisional = newVal
+            nextState = everyState
+    return [provisional, nextState]
+
+
+'''
 # MINIMAX with Alpha Beta Pruning
-def minimax(state, isMaxPlayer, alpha, beta, depth=0):
-    if depth ==0 : #Time ran out
-        return state, staticEval(state)
+def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
+    print("MINIMAX")
+
+#    if depth<=0: #Time ran out
+#        print("No more depth")
+#        return state
+
+    if (time.time() - startTime) >  0.8*TIME_LIMIT:
+        print("Timeout")
+        return state
 
     nextStates= successors(state)
     if nextStates ==[]:
-        return state, staticEval(state)
+        return state
 
 
     if isMaxPlayer == True:
+        print("MAXPLAYER")
         bestVal =  -sys.maxsize
         for child in nextStates:
-            value = minimax(child,False, alpha, beta,  depth-1)
-            bestVal = max(bestVal, value)
+            new_state = minimax(child, False, startTime, alpha, beta,  depth+1)
+            bestVal = max(bestVal, staticEval(new_state))
             alpha = max(alpha, bestVal)
             if beta <= alpha: #Found a solution
                 break
-        return child, bestVal
+        return child
 
     else:
+        print("MINPLAYER")
         bestVal = -sys.maxsize
         for child in nextStates:
-            value = minimax(child,True, alpha, beta, depth-1)
-            bestVal = min(bestVal, value)
+            new_state = minimax(child,True, startTime, alpha, beta, depth+1)
+            bestVal = min(bestVal, staticEval(new_state))
             beta = min(beta, bestVal)
             if beta <= alpha: #Found a solution
                 break
-        return child, bestVal
-
-
-
+        return child
+'''
 
 ##########################################################################
 # SCORING RELATED LOGIC
@@ -223,6 +285,9 @@ def calculate_single_piece_static_evals():
 
 
 def staticEval(state):
+    global M, N
+    print("\tEVAL", M, N)
+
     board = state[0]
     whoseTurn = state[1]
 
@@ -231,26 +296,32 @@ def staticEval(state):
     diags1 = []
     diags2 = []
 
+    for j in range(N):
+        cols.append([])
+
     #Find number of rows with K in a row
     for i in range(M):
         rows.append(board[i])
         for j in range(N):
             piece = board[i][j]
             cols[j].append(piece)
-            diags1[M-1+i].append(piece)
+            #diags1[M-1+i].append(piece)
 
     all_lines = []
 
     flat_rows = flatten(rows)
     flat_cols = flatten(cols)
-    flat_diags1 = flatten(diags1)
-    flat_diags2 = flatten(diags2)
+ #   flat_diags1 = flatten(diags1)
+ #   flat_diags2 = flatten(diags2)
 
     all_lines.extend(flat_rows)
     all_lines.extend(flat_cols)
-    all_lines.extend(flat_diags1)
-    all_lines.extend(flat_diags2)
+    print(all_lines)
 
+ #   all_lines.extend(flat_diags1)
+#    all_lines.extend(flat_diags2)
+
+    print("\t SCORING")
     score = 0
     # more than 1, 2,.. K-1 in line
     for line in all_lines:
@@ -260,7 +331,7 @@ def staticEval(state):
             score -= 5^k * line.count('O')
 
             #continuous occurrences in a line, needs more than 2
-            if k>1:
+            if k > 1:
                 score += 10^k * line.count('X'*k)
                 score -= 10^k * line.count('O'*k)
 

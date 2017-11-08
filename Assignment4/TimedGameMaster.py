@@ -6,10 +6,10 @@ S. Tanimoto, April 29, 2015.
 
 # Specify details of a match here: 
 import vaibhaviKInARow as player1
-import twin as player2
-from FiveInARowGameType import K, NAME, INITIAL_STATE
-#from TicTacToeGameType import K, NAME, INITIAL_STATE
-TIME_PER_MOVE = 0.5
+import kermit as player2
+#from FiveInARowGameType import K, NAME, INITIAL_STATE
+from TicTacToeGameType import K, NAME, INITIAL_STATE
+TIME_PER_MOVE = 5
 
 USE_HTML = True
 
@@ -42,7 +42,7 @@ def runGame():
         if USE_HTML: gameToHTML.endHTML()
         return
     try:
-        p2comment = player2.prepare(INITIAL_STATE, K, 'X', player1.nickname())
+        p2comment = player2.prepare(INITIAL_STATE, K, 'O', player1.nickname())
     except:
         report = 'Player 2 ('+player2.nickname()+' failed to prepare, and loses by default.'
         print(report)

@@ -41,16 +41,18 @@ STATE_2 = \
 
 
 player.prepare(INITIAL_STATE, 3, what_side_I_play ='X', opponent_nickname = 'Segundo')
-print(player.init_zobrist())
+#print(player.init_zobrist())
 #print(player.zhash(INITIAL_STATE[0]))
 
 #print(player.PIECE_VAL['X'])
-z0 = player.zhash(INITIAL_STATE[0])
-z1 = player.zhash(STATE_1[0])
-z2 = player.zhash(STATE_2[0])
-print(player.Z_NUM)
-print(z0)
-print(z1)
-print(z2)
-print(z1^z0)
+#z0 = player.zhash(INITIAL_STATE[0])
+#z1 = player.zhash(STATE_1[0])
+#z2 = player.zhash(STATE_2[0])
+#print(player.Z_NUM)
+#print(z0)
+#print(z1)
+#print(z2)
+#print(z1^z0)
+print(player.staticEval(INITIAL_STATE))
+
 

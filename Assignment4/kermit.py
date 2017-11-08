@@ -117,6 +117,7 @@ def minimax(state, startTime, timeLimit, plyLeft):
     '''minimax algorithm'''
     if timeLimit - (time.time() - startTime) < 0.1:
         return [staticEval(state), state]
+
     board = state[0]
     whoseMove = state[1]
     newState = state
