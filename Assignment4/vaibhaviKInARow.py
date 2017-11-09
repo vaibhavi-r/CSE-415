@@ -1,12 +1,21 @@
-import random
+'''
+vaibhaviKInARow.py
+Author: Vaibhavi Rangarajan
+OPTION B: K-in-a-Row with Forbidden Squares.
+'''
+from random import getrandbits
+from random import choice
 import time
 from copy import deepcopy
 import sys
 
+#STATE VARIABLES
+global NEW_STATE
+
+
 # START VARIABLES
 INITIAL_PLAYER = ''
 INITIAL_BOARD = []
-INITIAL_BOARD_HASH =''
 
 
 # PLAYER VARIABLES
@@ -24,9 +33,9 @@ TIME_LIMIT =0
 # STATE EVAL VARIABLES
 NUM_AVAILABLE_SPOTS = 0
 NUM_FORBIDDEN_SPOTS = 0
-NUM_FILLED_SPOTS = 0
-NUM_X = 0
-NUM_O = 0
+#NUM_FILLED_SPOTS = 0
+#NUM_X = 0
+#NUM_O = 0
 
 # Z SCORE RELATED
 PIECE_VAL = {'O':1, 'X':2} #, '-':3 , ' ':4}
@@ -117,7 +126,7 @@ def init_zobrist():
     for tile in range(M*N):  # loop over the board as a linear array
         Z_NUM.append([[],[],[]])
         for piece in range(3):  # loop over the pieces
-            Z_NUM[tile][piece] = random.getrandbits(32)
+            Z_NUM[tile][piece] = getrandbits(32)
     #print("Z_NUM table", len(Z_NUM), len(Z_NUM[0]), Z_NUM)
 
 def zhash(board):
@@ -166,7 +175,7 @@ def makeMove(currentState, currentRemark, timeLimit=10000):
     if move==None:
         print("Unable to find possible Move!")
 
-    newRemark = respond(currentState,currentRemark)
+    newRemark = respond(currentState, newState, move, currentRemark)
     return [[move, newState], newRemark]
 
     #print("END makeMove")
@@ -362,7 +371,7 @@ def staticEval(state):
                 score += 10^k * line.count(MY_SIDE*k)
                 score -= 10^k * line.count(OPP_SIDE*k)
 
-        score = score + (5*mine) - (5*yours)
+        score = score + (5*mine) - (8*yours)
 
     #ensure if threat exists, it is noticed
     if OPP_SIDE == whoseTurn:
@@ -398,13 +407,51 @@ lose, win, game, play, player, loser, winner, tough, easy, puzzle, move, go, sto
 saved game, blocked you
 """
 
-def respond(currentState, currentRemark):
+def respond(currentState, newState, move, currentRemark):
+    """ Madeline derives from the adventurous, young, French cartoon namesake.
+    Personality: Adventurous, and enthusiastic. Speaks in rhymes.
+    """
     #print("respond")
-    score = get_static_score(currentState)
-#    if score > 0:
-#        return "I might win"
+    if NUM_AVAILABLE_SPOTS <=1:
+        return "And then there were none. Looks like the game is done."
 
-    #print("END respond")
+    if move == None:
+        return "You are clever, mon ami. This game has flummoxed me."
+
+    if (NUM_AVAILABLE_SPOTS/2)%2:
+        #Respond to Opponent
+        words = currentRemark.split(" ")
+        candidates = {"win": "Let's do this", "lose": "No way"}
+        for trigger in candidates:
+            if trigger in words:
+                return candidates[trigger]
+        return "Tomorrow at lunchtime we can meet and prep, would you care for some baguette and crepes?"
+
+    else:
+        #Respond to Game State
+        forbid_comment = "We started with " + str(NUM_FORBIDDEN_SPOTS) +" forbidden spaces . And we've moved a few paces ."
+        base_comment   = "I might need to go in a new direction . If only I were a kid mathematician ."
+        init_comment = INITIAL_PLAYER + " has a start advantage, you know . Do you think you can get " + K + " in a row ?"
+
+
+        if move[0]==move[1]:
+            diag_comment = "I like to run zigzag in the park, And on this diagonal, I place my mark"
+        elif move[0]==0 or move[0]==M-1:
+            diag_comment= "I am keeping close to the edge now. You can keep the rest "
+        else:
+            diag_comment= "I like to move"
+
+        score = get_static_score(currentState)
+        new_score = get_static_score(newState)
+        diff = new_score - score
+        if diff > 1000:
+            diff_comment = "Yay! This might do the trick. A few more moves to win this quick."
+        elif diff <0:
+            diff_comment = "Sacre Bleu, it simply can't be! Am I worse off than I thought I'd be?"
+        #elif diff < 1000:
+
+        return choice([forbid_comment, base_comment, diff_comment])
+
     return "Aha"
 ##########################################################################
 # Add zhash
