@@ -9,7 +9,7 @@ import vaibhaviKInARow as player2
 import kermit as player1
 #from FiveInARowGameType import K, NAME, INITIAL_STATE
 from TicTacToeGameType import K, NAME, INITIAL_STATE
-TIME_PER_MOVE = 5
+TIME_PER_MOVE = 1
 
 USE_HTML = True
 

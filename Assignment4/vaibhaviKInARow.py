@@ -28,6 +28,12 @@ NUM_FILLED_SPOTS = 0
 NUM_X = 0
 NUM_O = 0
 
+# Z SCORE RELATED
+PIECE_VAL = {'O':1, 'X':2} #, '-':3 , ' ':4}
+Z_NUM =[]  #2d array of size (MxN) by 2 (positions x pieces)
+Z_SCORES ={} #Static State Evals stored without iteration depth
+
+
 OPEN_SPOTS = []
 
 
@@ -75,21 +81,20 @@ def prepare(initial_state, k, what_side_I_play, opponent_nickname):
 
     #INITIAL_BOARD_HASH = zhash(INITIAL_BOARD)
     #print("Board Hash ", INITIAL_BOARD_HASH)
-
     parse_initial_board()
 
     return "OK"
 
 def parse_initial_board():
-    global NUM_O, NUM_X, NUM_FORBIDDEN_SPOTS, NUM_FILLED_SPOTS, NUM_AVAILABLE_SPOTS
-    global M,N
-    global OPEN_SPOTS
+    global NUM_O, NUM_X, NUM_FORBIDDEN_SPOTS, NUM_FILLED_SPOTS
+    global OPEN_SPOTS, NUM_AVAILABLE_SPOTS
 
+    print("parse initial board")
     for i in range(M):
         for j in range(N):
             tile = INITIAL_BOARD[i][j]
+            print("tile", tile)
             if tile == ' ':
-                NUM_AVAILABLE_SPOTS += 1
                 OPEN_SPOTS.append([i,j])
             elif tile == 'X':
                 NUM_X +=1
@@ -100,18 +105,14 @@ def parse_initial_board():
             else:
                 NUM_FORBIDDEN_SPOTS += 1
 
-    print("OPEN SPOTS", OPEN_SPOTS)
+    NUM_AVAILABLE_SPOTS = len(OPEN_SPOTS)
+    print("OPEN SPOTS initialized", OPEN_SPOTS)
 
 
 ############################################################
 # ZOBRIST HASHING
-
-PIECE_VAL = {'O':1, 'X':2} #, '-':3 , ' ':4}
-Z_NUM =[]  #2d array of size (MxN) by 2 (positions x pieces)
-Z_SCORES ={} #Static State Evals stored without iteration depth
-
 def init_zobrist():
-    global M, N
+    print("init zobrist")
     global Z_NUM
     global Z_SCORES
 
@@ -120,61 +121,43 @@ def init_zobrist():
     # fill Z table with random numbers/bitstrings
     print("Initializing Zobrist Table for Board Size:",M,'by',N)
     for tile in range(M*N):  # loop over the board as a linear array
-        Z_NUM.append([[],[]])
-        for piece in range(2):  # loop over the pieces
+        Z_NUM.append([[],[],[]])
+        for piece in range(3):  # loop over the pieces
             Z_NUM[tile][piece] = random.getrandbits(32)
+    print("Z_NUM table", len(Z_NUM), len(Z_NUM[0]), Z_NUM)
 
 def zhash(board):
     global Z_NUM, M, N
     h=0
     print('zhash--')
+    print("BOARD", board)
     for r in range(M):
         for c in range(N):
             if board[r][c] != ' ' and board[r][c] != '-':
                 print("Found piece:", board[r][c])
                 piece = PIECE_VAL[board[r][c]] #piece at board[r][c]
                 h = h^Z_NUM[r*M+c][piece]
+    print("END zhash")
     return str(h)
 
 ############################################################
 # MOVE MAKING LOGIC
 
-def successors(state):
-    global M, N, NUM_AVAILABLE_SPOTS, OPEN_SPOTS
-    'possible next states achievable from current state'
-    board = state[0]
-    currentPlayer = state[1]
-    successorList = []
-
-    for spot in OPEN_SPOTS:
-        [i,j] = spot
-        if board[i][j] == ' ':
-            nextBoard = deepcopy(board)
-            nextBoard[i][j] = currentPlayer
-            nextPlayer = other(currentPlayer)
-            successorList.append([nextBoard, nextPlayer])
-        else:
-            OPEN_SPOTS.remove(spot)
-            NUM_AVAILABLE_SPOTS -=1
-
-        #    for i in range(M):
-#        for j in range(N):
-
-    #Possibly order by static val?
-    #print("Successors = ", len(successorList))
-    return successorList
-
 def makeMove(currentState, currentRemark, timeLimit=10000):
-    global OPEN_SPOTS, MY_SIDE, TIME_LIMIT, NUM_AVAILABLE_SPOTS
+    print("makeMove")
+    global TIME_LIMIT
+
     now = time.time()
     TIME_LIMIT = timeLimit
-
 
     currentBoard  = currentState[0]
     whoseTurn = currentState[1]
 
     if whoseTurn!=MY_SIDE:
         print("What's happening!")
+
+    #find only open spots to generate successors
+    update_open_spots(currentBoard)
 
     init_alpha = -sys.maxsize
     init_beta  = sys.maxsize
@@ -183,27 +166,42 @@ def makeMove(currentState, currentRemark, timeLimit=10000):
     newState = minimax(currentState, isMaxPlayer=True, startTime=now, alpha=init_alpha, beta=init_beta, depth=init_depth)
 
     move = getMove(currentState, newState)
+    print("OPEN SPOTS before:", OPEN_SPOTS)
     print("MOVE", move)
 
-    OPEN_SPOTS.remove(move)
-    NUM_AVAILABLE_SPOTS -= 1
+    if move==None:
+        print("Unable to find possible Move!")
 
-    newRemark = respond(newState,currentRemark)
-
+    newRemark = respond(currentState,currentRemark)
     return [[move, newState], newRemark]
 
+    print("END makeMove")
+
+def update_open_spots(board):
+    global  OPEN_SPOTS, NUM_AVAILABLE_SPOTS
+    OPEN_SPOTS= []
+    for i in range(M):
+        for j in range(N):
+            if board[i][j]==' ':
+                OPEN_SPOTS.append([i,j])
+    NUM_AVAILABLE_SPOTS = len(OPEN_SPOTS)
 
 def getMove(state, newState):
+    print("getMove")
     board = state[0]
     newBoard = newState[0]
+
+    print("OLD BOARD - ",board)
+    print("NEW BOARD - ",newBoard)
 
     #expect only one row will change
     for spot in OPEN_SPOTS:
         i = spot[0]
         j = spot[1]
-        if board[i][j] !=newBoard[i][j]:
+        if board[i][j] != newBoard[i][j]:
+            print("END getMove - found it")
             return [i,j]
-
+    print("END getMove - none")
     return None
 
 ##########################################################################
@@ -219,18 +217,21 @@ def other(current_player):
 
 # MINIMAX with Alpha Beta Pruning
 def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
-#    if depth<=0: #Time ran out
-#        print("No more depth")
-#        return state
+    print("minimax")
+    if depth<=0: #Time ran out
+        print("END minimax (0 Depth)")
+        print("No more depth")
+        return state
 
     if TIME_LIMIT - (time.time() - startTime) <  0.15:
         #print("Timeout")
+        print("END minimax (TIMEOUT)")
         return state
 
     nextStates= successors(state)
     if nextStates ==[]:
+        print("END minimax (LEAF)")
         return state
-
 
     if isMaxPlayer == True:
         bestVal =  -sys.maxsize
@@ -240,6 +241,7 @@ def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
             alpha = max(alpha, bestVal)
             if beta <= alpha: #Found a solution
                 break
+        print("END minimax (MAX)")
         return child
 
     else:
@@ -250,12 +252,33 @@ def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
             beta = min(beta, bestVal)
             if beta <= alpha: #Found a solution
                 break
+        print("END minimax (MIN)")
         return child
+
+def successors(state):
+    print("successors")
+    'possible next states achievable from current state'
+    board = state[0]
+    currentPlayer = state[1]
+    successorList = []
+
+    print("OPEN SPOTS (successors)", OPEN_SPOTS)
+
+    for spot in OPEN_SPOTS:
+        [i, j] = spot
+        if board[i][j] == ' ':
+            nextBoard = deepcopy(board)
+            nextBoard[i][j] = currentPlayer
+            nextPlayer = other(currentPlayer)
+            successorList.append([nextBoard, nextPlayer])
+
+        # Possibly order by static val?
+        # print("Successors = ", len(successorList))
+    print("END successors")
+    return successorList
 
 ##########################################################################
 # SCORING RELATED LOGIC
-
-STATIC_SCORES={}
 
 #def calculate_single_piece_static_evals():
 #    for r in range(M):
@@ -276,20 +299,26 @@ def diagonals(mat):
         yield list(diag(0, sy))
 
 def get_static_score(state):
+    print('get static score')
+
     'Calls static eval function for newly seen board, else returns precomputed value'
     global Z_SCORES
     zcode = zhash(state[0])
+
     if zcode in Z_SCORES: #pre-computed value
+        print('known zcode')
         return Z_SCORES[zcode]
 
     else: #new board config
+        print('unknown zcode')
         score = staticEval(state)
         Z_SCORES[zcode] = score
+        print("END get static score")
         return score
 
 
 def staticEval(state):
-    global M, N
+    print('static eval')
     board = state[0]
     whoseTurn = state[1]
 
@@ -307,7 +336,6 @@ def staticEval(state):
             piece = board[i][j]
             cols[j].append(piece)
 
-
     all_lines = []
 
     if N>=K:
@@ -322,7 +350,6 @@ def staticEval(state):
     flat_diags = [d for d in flat_diags if len(d) >=K]
 
     all_lines.extend(flat_diags)
-
 
     score = 0
     threats =  0
@@ -351,8 +378,8 @@ def staticEval(state):
         score -= 10^k
 
     #threat_level = K-curr
+    print('END static eval')
     return score
-
 
 def flatten(lines):
     'Reduce a list of lines to single strings for each row/column/diagonal'
@@ -361,7 +388,6 @@ def flatten(lines):
         new_line = ''.join(piece if piece!=' ' else '.' for piece in line)
         flat_lines.append(new_line)
     return flat_lines
-
 
 # FACTORS to consider
 # number of 1,2,... K-1 in line
@@ -373,7 +399,6 @@ def flatten(lines):
 # number of overall available spots
 # Whoever is playing gets a basic advantage for same board orientation
 
-
 ##########################################################################
 # CONVERSATIONAL LOGIC
 
@@ -383,10 +408,12 @@ saved game, blocked you
 """
 
 def respond(currentState, currentRemark):
-    score = get_static_score(currentState[0])
+    print("respond")
+    score = get_static_score(currentState)
+#    if score > 0:
+#        return "I might win"
 
-
-
+    print("END respond")
     return "Aha"
 ##########################################################################
 # Add zhash
