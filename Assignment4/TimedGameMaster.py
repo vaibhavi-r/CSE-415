@@ -5,10 +5,10 @@ S. Tanimoto, April 29, 2015.
 '''
 
 # Specify details of a match here: 
-import vaibhaviKInARow as player2
-import kermit as player1
-#from FiveInARowGameType import K, NAME, INITIAL_STATE
-from TicTacToeGameType import K, NAME, INITIAL_STATE
+import vaibhaviKInARow as player1
+import destorier as player2
+from FiveInARowGameType import K, NAME, INITIAL_STATE
+#from TicTacToeGameType import K, NAME, INITIAL_STATE
 TIME_PER_MOVE = 1
 
 USE_HTML = True

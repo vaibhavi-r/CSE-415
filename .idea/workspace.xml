@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ec0cf1e8-4e59-4b28-ba52-96f032f06a36" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ai-disease-modelling" afterPath="$PROJECT_DIR$/ai-disease-modelling" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assignment4/TimedGameMaster.py" afterPath="$PROJECT_DIR$/Assignment4/TimedGameMaster.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py" afterPath="$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py" />
     </list>
@@ -64,8 +63,8 @@
       <file leaf-file-name="vaibhaviKInARow.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1227">
-              <caret line="302" column="4" selection-start-line="302" selection-start-column="4" selection-end-line="302" selection-end-column="4" />
+            <state relative-caret-position="-3475">
+              <caret line="157" column="19" selection-start-line="157" selection-start-column="19" selection-end-line="157" selection-end-column="19" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -86,8 +85,8 @@
       <file leaf-file-name="TimedGameMaster.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Assignment4/TimedGameMaster.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="17" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="17" />
+            <state relative-caret-position="45">
+              <caret line="10" column="1" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
               <folding>
                 <element signature="e#168#201#0" expanded="true" />
               </folding>
@@ -547,9 +546,9 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32894737" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32894737" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3681592" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4216418" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1430585" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286119" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3955224" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -601,42 +600,42 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py</url>
-          <line>371</line>
+          <line>362</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py</url>
-          <line>197</line>
+          <line>191</line>
           <option name="timeStamp" value="38" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py</url>
-          <line>165</line>
+          <line>159</line>
           <option name="timeStamp" value="47" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py</url>
-          <line>225</line>
+          <line>219</line>
           <option name="timeStamp" value="49" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py</url>
-          <line>235</line>
+          <line>229</line>
           <option name="timeStamp" value="50" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py</url>
-          <line>248</line>
+          <line>242</line>
           <option name="timeStamp" value="51" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py</url>
-          <line>351</line>
+          <line>342</line>
           <option name="timeStamp" value="52" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py</url>
-          <line>381</line>
+          <line>372</line>
           <option name="timeStamp" value="53" />
         </line-breakpoint>
       </breakpoints>
@@ -947,16 +946,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Assignment4/TimedGameMaster.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="17" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="17" />
-          <folding>
-            <element signature="e#168#201#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Assignment4/destorier.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="137">
@@ -977,6 +966,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Assignment4/TimedGameMaster.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="10" column="1" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
+          <folding>
+            <element signature="e#168#201#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Assignment4/winTesterForK.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
@@ -987,8 +986,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Assignment4/vaibhaviKInARow.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1227">
-          <caret line="302" column="4" selection-start-line="302" selection-start-column="4" selection-end-line="302" selection-end-column="4" />
+        <state relative-caret-position="-3475">
+          <caret line="157" column="19" selection-start-line="157" selection-start-column="19" selection-end-line="157" selection-end-column="19" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>

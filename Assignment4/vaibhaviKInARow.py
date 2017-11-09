@@ -59,7 +59,7 @@ def prepare(initial_state, k, what_side_I_play, opponent_nickname):
     global INITIAL_BOARD, INITIAL_PLAYER
     global MY_SIDE, MY_NAME, OPP_SIDE, OPP_NAME
 
-    print("PREPARING")
+    #print("PREPARING")
     INITIAL_BOARD = initial_state[0]
     INITIAL_PLAYER = initial_state[1]
 
@@ -75,12 +75,7 @@ def prepare(initial_state, k, what_side_I_play, opponent_nickname):
     OPP_NAME = opponent_nickname
     MY_NAME = nickname()
 
-
-    #Zobrist Hashing
     init_zobrist()
-
-    #INITIAL_BOARD_HASH = zhash(INITIAL_BOARD)
-    #print("Board Hash ", INITIAL_BOARD_HASH)
     parse_initial_board()
 
     return "OK"
@@ -89,11 +84,10 @@ def parse_initial_board():
     global NUM_O, NUM_X, NUM_FORBIDDEN_SPOTS, NUM_FILLED_SPOTS
     global OPEN_SPOTS, NUM_AVAILABLE_SPOTS
 
-    print("parse initial board")
+    #print("parse initial board")
     for i in range(M):
         for j in range(N):
             tile = INITIAL_BOARD[i][j]
-            print("tile", tile)
             if tile == ' ':
                 OPEN_SPOTS.append([i,j])
             elif tile == 'X':
@@ -106,45 +100,45 @@ def parse_initial_board():
                 NUM_FORBIDDEN_SPOTS += 1
 
     NUM_AVAILABLE_SPOTS = len(OPEN_SPOTS)
-    print("OPEN SPOTS initialized", OPEN_SPOTS)
+    #print("OPEN SPOTS initialized", OPEN_SPOTS)
 
 
 ############################################################
 # ZOBRIST HASHING
 def init_zobrist():
-    print("init zobrist")
+    #print("init zobrist")
     global Z_NUM
     global Z_SCORES
 
     Z_SCORES = {}
 
     # fill Z table with random numbers/bitstrings
-    print("Initializing Zobrist Table for Board Size:",M,'by',N)
+    #print("Initializing Zobrist Table for Board Size:",M,'by',N)
     for tile in range(M*N):  # loop over the board as a linear array
         Z_NUM.append([[],[],[]])
         for piece in range(3):  # loop over the pieces
             Z_NUM[tile][piece] = random.getrandbits(32)
-    print("Z_NUM table", len(Z_NUM), len(Z_NUM[0]), Z_NUM)
+    #print("Z_NUM table", len(Z_NUM), len(Z_NUM[0]), Z_NUM)
 
 def zhash(board):
     global Z_NUM, M, N
     h=0
-    print('zhash--')
-    print("BOARD", board)
+    #print('zhash--')
+    #print("BOARD", board)
     for r in range(M):
         for c in range(N):
             if board[r][c] != ' ' and board[r][c] != '-':
-                print("Found piece:", board[r][c])
+                #print("Found piece:", board[r][c])
                 piece = PIECE_VAL[board[r][c]] #piece at board[r][c]
                 h = h^Z_NUM[r*M+c][piece]
-    print("END zhash")
+    #print("END zhash")
     return str(h)
 
 ############################################################
 # MOVE MAKING LOGIC
 
 def makeMove(currentState, currentRemark, timeLimit=10000):
-    print("makeMove")
+    #print("makeMove")
     global TIME_LIMIT
 
     now = time.time()
@@ -161,13 +155,13 @@ def makeMove(currentState, currentRemark, timeLimit=10000):
 
     init_alpha = -sys.maxsize
     init_beta  = sys.maxsize
-    init_depth = 2
+    init_depth = K/2
 
     newState = minimax(currentState, isMaxPlayer=True, startTime=now, alpha=init_alpha, beta=init_beta, depth=init_depth)
 
     move = getMove(currentState, newState)
-    print("OPEN SPOTS before:", OPEN_SPOTS)
-    print("MOVE", move)
+    #print("OPEN SPOTS before:", OPEN_SPOTS)
+    #print("MOVE", move)
 
     if move==None:
         print("Unable to find possible Move!")
@@ -175,7 +169,7 @@ def makeMove(currentState, currentRemark, timeLimit=10000):
     newRemark = respond(currentState,currentRemark)
     return [[move, newState], newRemark]
 
-    print("END makeMove")
+    #print("END makeMove")
 
 def update_open_spots(board):
     global  OPEN_SPOTS, NUM_AVAILABLE_SPOTS
@@ -187,21 +181,21 @@ def update_open_spots(board):
     NUM_AVAILABLE_SPOTS = len(OPEN_SPOTS)
 
 def getMove(state, newState):
-    print("getMove")
+    #print("getMove")
     board = state[0]
     newBoard = newState[0]
 
-    print("OLD BOARD - ",board)
-    print("NEW BOARD - ",newBoard)
+    #print("OLD BOARD - ",board)
+   # print("NEW BOARD - ",newBoard)
 
     #expect only one row will change
     for spot in OPEN_SPOTS:
         i = spot[0]
         j = spot[1]
         if board[i][j] != newBoard[i][j]:
-            print("END getMove - found it")
+            #print("END getMove - found it")
             return [i,j]
-    print("END getMove - none")
+    #print("END getMove - none")
     return None
 
 ##########################################################################
@@ -217,20 +211,20 @@ def other(current_player):
 
 # MINIMAX with Alpha Beta Pruning
 def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
-    print("minimax")
+    #print("minimax")
     if depth<=0: #Time ran out
-        print("END minimax (0 Depth)")
-        print("No more depth")
+        #print("END minimax (0 Depth)")
+        #print("No more depth")
         return state
 
-    if TIME_LIMIT - (time.time() - startTime) <  0.15:
+    if TIME_LIMIT - (time.time() - startTime) <  0.2:
         #print("Timeout")
-        print("END minimax (TIMEOUT)")
+        #print("END minimax (TIMEOUT)")
         return state
 
     nextStates= successors(state)
     if nextStates ==[]:
-        print("END minimax (LEAF)")
+        #print("END minimax (LEAF)")
         return state
 
     if isMaxPlayer == True:
@@ -241,7 +235,7 @@ def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
             alpha = max(alpha, bestVal)
             if beta <= alpha: #Found a solution
                 break
-        print("END minimax (MAX)")
+        #print("END minimax (MAX)")
         return child
 
     else:
@@ -252,17 +246,17 @@ def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
             beta = min(beta, bestVal)
             if beta <= alpha: #Found a solution
                 break
-        print("END minimax (MIN)")
+        #print("END minimax (MIN)")
         return child
 
 def successors(state):
-    print("successors")
+    #print("successors")
     'possible next states achievable from current state'
     board = state[0]
     currentPlayer = state[1]
     successorList = []
 
-    print("OPEN SPOTS (successors)", OPEN_SPOTS)
+    #print("OPEN SPOTS (successors)", OPEN_SPOTS)
 
     for spot in OPEN_SPOTS:
         [i, j] = spot
@@ -273,8 +267,8 @@ def successors(state):
             successorList.append([nextBoard, nextPlayer])
 
         # Possibly order by static val?
-        # print("Successors = ", len(successorList))
-    print("END successors")
+        #print("Successors = ", len(successorList))
+    #print("END successors")
     return successorList
 
 ##########################################################################
@@ -289,7 +283,6 @@ def successors(state):
 #                h = h ^ Z_NUM[r * M + c][piece]
 
 def diagonals(mat):
-    global M, N
     def diag(sx, sy):
         for x, y in zip(range(sx, M), range(sy, N)):
             yield mat[x][y]
@@ -299,26 +292,24 @@ def diagonals(mat):
         yield list(diag(0, sy))
 
 def get_static_score(state):
-    print('get static score')
-
     'Calls static eval function for newly seen board, else returns precomputed value'
     global Z_SCORES
     zcode = zhash(state[0])
 
     if zcode in Z_SCORES: #pre-computed value
-        print('known zcode')
+        #print('known zcode')
         return Z_SCORES[zcode]
 
     else: #new board config
-        print('unknown zcode')
+        #print('unknown zcode')
         score = staticEval(state)
         Z_SCORES[zcode] = score
-        print("END get static score")
+        #print("END get static score")
         return score
 
 
 def staticEval(state):
-    print('static eval')
+    #print('static eval')
     board = state[0]
     whoseTurn = state[1]
 
@@ -378,7 +369,7 @@ def staticEval(state):
         score -= 10^k
 
     #threat_level = K-curr
-    print('END static eval')
+    #print('END static eval')
     return score
 
 def flatten(lines):
@@ -408,12 +399,12 @@ saved game, blocked you
 """
 
 def respond(currentState, currentRemark):
-    print("respond")
+    #print("respond")
     score = get_static_score(currentState)
 #    if score > 0:
 #        return "I might win"
 
-    print("END respond")
+    #print("END respond")
     return "Aha"
 ##########################################################################
 # Add zhash
