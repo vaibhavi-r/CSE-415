@@ -8,6 +8,7 @@ from random import choice
 import time
 from copy import deepcopy
 import sys
+import collections
 
 #STATE VARIABLES
 global NEW_STATE
@@ -33,9 +34,6 @@ TIME_LIMIT =0
 # STATE EVAL VARIABLES
 NUM_AVAILABLE_SPOTS = 0
 NUM_FORBIDDEN_SPOTS = 0
-#NUM_FILLED_SPOTS = 0
-#NUM_X = 0
-#NUM_O = 0
 
 # Z SCORE RELATED
 PIECE_VAL = {'O':1, 'X':2} #, '-':3 , ' ':4}
@@ -90,8 +88,7 @@ def prepare(initial_state, k, what_side_I_play, opponent_nickname):
     return "OK"
 
 def parse_initial_board():
-    global NUM_O, NUM_X, NUM_FORBIDDEN_SPOTS, NUM_FILLED_SPOTS
-    global OPEN_SPOTS, NUM_AVAILABLE_SPOTS
+    global OPEN_SPOTS, NUM_AVAILABLE_SPOTS, NUM_FORBIDDEN_SPOTS
 
     #print("parse initial board")
     for i in range(M):
@@ -99,18 +96,11 @@ def parse_initial_board():
             tile = INITIAL_BOARD[i][j]
             if tile == ' ':
                 OPEN_SPOTS.append([i,j])
-            elif tile == 'X':
-                NUM_X +=1
-                NUM_FILLED_SPOTS +=1
-            elif tile == 'O':
-                NUM_O += 1
-                NUM_FILLED_SPOTS +=1
-            else:
+            elif tile == '-':
                 NUM_FORBIDDEN_SPOTS += 1
 
     NUM_AVAILABLE_SPOTS = len(OPEN_SPOTS)
     #print("OPEN SPOTS initialized", OPEN_SPOTS)
-
 
 ############################################################
 # ZOBRIST HASHING
@@ -226,7 +216,7 @@ def minimax(state, isMaxPlayer, startTime, alpha, beta, depth=0):
         #print("No more depth")
         return state
 
-    if TIME_LIMIT - (time.time() - startTime) <  0.2:
+    if TIME_LIMIT - (time.time() - startTime) <  0.25:
         #print("Timeout")
         #print("END minimax (TIMEOUT)")
         return state
@@ -283,13 +273,6 @@ def successors(state):
 ##########################################################################
 # SCORING RELATED LOGIC
 
-#def calculate_single_piece_static_evals():
-#    for r in range(M):
-#        for c in range(N):
-#            for piece in range(3):
-#                h = Z_NUM[r][c]
-#                piece = PIECE_VAL(INITIAL_BOARD[r][c])  # piece at board[r][c]
-#                h = h ^ Z_NUM[r * M + c][piece]
 
 def diagonals(mat):
     def diag(sx, sy):
@@ -351,33 +334,64 @@ def staticEval(state):
 
     all_lines.extend(flat_diags)
 
+
+    #reduce to minimal number of unique line patters
+    unique_lines = collections.Counter(all_lines)
+
     score = 0
-    threats =  0
 
     # more than 1, 2,.. K-1 in line
-    for line in all_lines:
+    for line in unique_lines:
         l = len(line)
-        mine =  line.count(MY_SIDE)
-        yours = line.count(OPP_SIDE)
-        forbidden = line.count('_')
-        open = line.count('.')
+        freq = unique_lines[line]
 
-#        threats =
-        for k in range(1, K):
+        ######Score based on threats, and bad positions : K-1, K-2 in a row  (MAJOR IMPACT)
+        dot = '.'
+        block = '-'
+        bad_pattern_my = MY_SIDE*(K-2)
+        bad_pattern_you = OPP_SIDE*(K-2)
+        threat_pattern_my = MY_SIDE*(K-1)
+        threat_pattern_you = OPP_SIDE *(K-1)
+
+        #BAD/GOOD = K-2 elements open on 1 or 2 sides
+        bad1_my = line.count(dot+bad_pattern_my + block)    + line.count(block+bad_pattern_my+dot)+\
+                  line.count(dot+bad_pattern_my + OPP_SIDE) + line.count(OPP_SIDE+bad_pattern_my+dot)
+        bad1_you = line.count(dot + bad_pattern_you + block) + line.count(block + bad_pattern_you + dot) + \
+                  line.count(dot + bad_pattern_you + MY_SIDE) + line.count(MY_SIDE + bad_pattern_you + dot)
+
+        bad2_my = line.count(dot+bad_pattern_my+dot)
+        bad2_you = line.count(dot+bad_pattern_you+dot)
+
+
+        #THREAT = K-1 elements open on 1 or 2 sides
+        threat1_my = line.count(dot + threat_pattern_my + block) + line.count(block + threat_pattern_my + dot) + \
+                  line.count(dot + threat_pattern_my + OPP_SIDE) + line.count(OPP_SIDE + threat_pattern_my + dot)
+        threat1_you = line.count(dot + threat_pattern_you + block) + line.count(block + threat_pattern_you + dot) + \
+                   line.count(dot + threat_pattern_you + MY_SIDE) + line.count(MY_SIDE + threat_pattern_you + dot)
+
+        threat2_my = line.count(dot + threat_pattern_my + dot)
+        threat2_you = line.count(dot + threat_pattern_you + dot)
+
+        score += 4^(bad1_my*freq) + 9^(bad1_my*freq) + 100^(threat1_my*freq) + 200^(threat2_my*freq)
+        score -= 5^(bad1_you*freq) + 10^(bad1_you*freq) + 1000^(threat1_you*freq) + 2000^(threat2_you*freq)
+
+        ###### Score based on how many in a line (MINOR IMPACT)
+        for k in range(2, K-2):
             #number in a line
             #continuous occurrences in a line, needs more than 2
+            mine_continuous = line.count(dot+(MY_SIDE*k) + dot)
+            you_continuous = line.count(dot +(OPP_SIDE*k) + dot)
+            score += (3^k)*mine_continuous*freq
+            score -= (4^k)*you_continuous*freq
 
-            if k > 1:
-                score += 10^k * line.count(MY_SIDE*k)
-                score -= 10^k * line.count(OPP_SIDE*k)
+        #mine = line.count(MY_SIDE)  # how many
+        #yours = line.count(OPP_SIDE)  # how many
 
-        score = score + (5*mine) - (8*yours)
 
-    #ensure if threat exists, it is noticed
-    if OPP_SIDE == whoseTurn:
-        score -= 10^k
+    #ensure if threat/bad exists, it is noticed and actionable
+    if MY_SIDE == whoseTurn:
+        score += 1000
 
-    #threat_level = K-curr
     #print('END static eval')
     return score
 
@@ -402,11 +416,6 @@ def flatten(lines):
 ##########################################################################
 # CONVERSATIONAL LOGIC
 
-"""
-lose, win, game, play, player, loser, winner, tough, easy, puzzle, move, go, stop, start, finish, close
-saved game, blocked you
-"""
-
 def respond(currentState, newState, move, currentRemark):
     """ Madeline derives from the adventurous, young, French cartoon namesake.
     Personality: Adventurous, and enthusiastic. Speaks in rhymes.
@@ -418,10 +427,36 @@ def respond(currentState, newState, move, currentRemark):
     if move == None:
         return "You are clever, mon ami. This game has flummoxed me."
 
-    if (NUM_AVAILABLE_SPOTS/2)%2:
+    if choice([0,1])%2==0:
         #Respond to Opponent
-        words = currentRemark.split(" ")
-        candidates = {"win": "Let's do this", "lose": "No way"}
+
+        words = currentRemark.lower().split(" ")
+        win_comment = "If I win this game today, you will have to do as I say."
+        lose_comment = "Let us hope I dont lose. To speak with you, I will refuse."
+        tough_comment = "Dont give up if this feels tough, lets get to the end, thats enough "
+        stop_comment = "We should stop and place a bet? For the prize of a baguette."
+        play_comment = "It is so much fun to play with you! Do you feel the same too?"
+        easy_comment = "Isnt this game easy, I think "
+        move_comment = "I want to move here and there, until no more spots are there"
+        finish_comment = "It is getting close to the end. Will we still be friends?"
+        good_comment = "This just went from good to great . We will be here till late"
+        block_comment = "Sometimes you block another, sometimes you get blocked by mother"
+        you_comment = "I dont like to talk about me, but I will, " + OPP_NAME + "you are like family"
+
+        candidates = {"win": win_comment,
+                      "lose": lose_comment,
+                      "loser":lose_comment,
+                      "winner":win_comment,
+                      "player": play_comment,
+                      "tough":easy_comment,
+                      "easy":tough_comment,
+                      "move":move_comment,
+                      "stop":stop_comment,
+                      "finish":finish_comment,
+                      "good":good_comment,
+                      "block" : block_comment,
+                      "you": you_comment
+                      }
         for trigger in candidates:
             if trigger in words:
                 return candidates[trigger]
@@ -431,28 +466,27 @@ def respond(currentState, newState, move, currentRemark):
         #Respond to Game State
         forbid_comment = "We started with " + str(NUM_FORBIDDEN_SPOTS) +" forbidden spaces . And we've moved a few paces ."
         base_comment   = "I might need to go in a new direction . If only I were a kid mathematician ."
-        init_comment = INITIAL_PLAYER + " has a start advantage, you know . Do you think you can get " + K + " in a row ?"
-
+        init_comment = str(INITIAL_PLAYER) + " has a start advantage, you know . What are the chances of " + str(K) + " in a row ?"
 
         if move[0]==move[1]:
             diag_comment = "I like to run zigzag in the park, And on this diagonal, I place my mark"
         elif move[0]==0 or move[0]==M-1:
             diag_comment= "I am keeping close to the edge now. You can keep the rest "
         else:
-            diag_comment= "I like to move"
+            diag_comment= "At " + str(move[0]) + " and " + str(move[1]) + " this counter I place. Your move now, pick up the pace. "
 
         score = get_static_score(currentState)
         new_score = get_static_score(newState)
         diff = new_score - score
         if diff > 1000:
             diff_comment = "Yay! This might do the trick. A few more moves to win this quick."
-        elif diff <0:
-            diff_comment = "Sacre Bleu, it simply can't be! Am I worse off than I thought I'd be?"
-        #elif diff < 1000:
+        elif diff < 0:
+            diff_comment = "Sacre Bleu, it cannot be! Am I worse off than I thought I'd be ?"
+        else:
+            diff_comment = "Not much has changed from in this move. If I win , I'll take you to the Loevre !"
 
-        return choice([forbid_comment, base_comment, diff_comment])
+        return choice([forbid_comment, init_comment, base_comment, diff_comment, diag_comment])
 
     return "Aha"
+
 ##########################################################################
-# Add zhash
-# Find threats and stop them

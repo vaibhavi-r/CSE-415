@@ -1,7 +1,7 @@
 UWNetID:vaibhavi
 Name: Vaibhavi Rangarajan
 
-CONVERSATIONAL AGENT:
+CONVERSATIONAL AGENT: YES
 The conversational agent fulfills all 3 criteria mentioned in the requirements.
 Madeline is a fictional French cartoon who is portrayed as an adventurous young school girl in books and TV shows .
 
@@ -14,9 +14,9 @@ In each turn, Madeline chooses to either respond based on the opponent remark, o
 B) Shows awareness of game state / dynamics
 --------------------------------------------
 The respond function accounts for parameters such as :
-i) The difference in scores due to the move,
+i) The difference in scores due to the move
 ii) The actual move made
-iii) Factors like the dimension of the board.
+iii)The initial state of the board
 
 E.g. When there are no more blank spaces- Madeline acknowledges the end.
 E.g. When NO move is made (unexpected during game), Madeline admits she is confused also.
@@ -26,16 +26,16 @@ E.g. When the current score is worsened - she shows determination to improve
 C) Responds to opponent remarks
 ---------------------------------
 Madeline looks for trigger words in the opponent remarks and responds with different emotions in a rhyming fashion.
-E.g. "Win" "Lose" etc
+E.g. "Win" "Lose" "Play"  and 10 more words invoke a different response from Madeline
+
 _______________________________________________________________________________________________________________________
-COMPETITION OPTION:
+COMPETITION OPTION: YES
 
 Evidence of Qualifications:
-____.html (Against __)
-____.html (Against __)
+Board Used = 7x7 , corners forbidden, 5 In a Row
 
-For your agent to qualify, you must submit game transcripts for two games that meet the following criteria.
-1. Each game must be between your agent and a different opponent.
-2. Your agent must be the winner of each of these two games.
-3. The games must involve a version of K-in-a-Row in which (a) K is at least 5 and the board is at least 7 by 7,
-but it can be bigger if you wish.
+1. Against Shipra Gupta - shipra
+Madeline-vs-Ships-in-Five-in-a-Row-on-Seven-by-Seven-Board-with-Corners-Forbidden-round-1.html
+
+2. Against Shiyi Luo - luos9
+Madeline-vs-Tark-in-Five-in-a-Row-on-Seven-by-Seven-Board-with-Corners-Forbidden-round-1.html

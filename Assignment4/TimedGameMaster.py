@@ -5,8 +5,11 @@ S. Tanimoto, April 29, 2015.
 '''
 
 # Specify details of a match here: 
-import vaibhaviKInARow as player1
-import destorier as player2
+import vaibhaviKInARow as player2
+import shipraKInARow as player1
+#import karan7KInARow as player1
+#import luos9KInARow as player1
+
 from FiveInARowGameType import K, NAME, INITIAL_STATE
 #from TicTacToeGameType import K, NAME, INITIAL_STATE
 TIME_PER_MOVE = 1
